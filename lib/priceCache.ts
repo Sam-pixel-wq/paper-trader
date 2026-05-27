@@ -153,8 +153,16 @@ async function fetchRealPrice(ticker: string): Promise<number | null> {
 
 async function getCurrentPrice(ticker: string): Promise<number | null> {
   const real = await fetchRealPrice(ticker)
-  if (real == null) return null
-  return isMarketOpen() ? real : simulatePrice(ticker, real)
+  if (real != null) {
+    return isMarketOpen() ? real : simulatePrice(ticker, real)
+  }
+  // Yahoo unavailable — use mock price so positions still show a value
+  try {
+    const { getMockQuote } = await import('./mockData')
+    return getMockQuote(ticker).price
+  } catch {
+    return null
+  }
 }
 
 // ─── public API ───────────────────────────────────────────────────────────────

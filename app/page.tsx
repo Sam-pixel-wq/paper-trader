@@ -8,6 +8,8 @@ import LeaderboardTab from '@/components/LeaderboardTab'
 import PlayerSetup from '@/components/PlayerSetup'
 import NewsTab from '@/components/NewsTab'
 import ChallengesTab from '@/components/ChallengesTab'
+import TickerTape from '@/components/TickerTape'
+import NewsToast from '@/components/NewsToast'
 
 const PortfolioTab = dynamic(() => import('@/components/PortfolioTab'), { ssr: false })
 
@@ -40,12 +42,12 @@ function fmt(n: number | undefined) {
 const LS_KEY = 'pt_player_v2'
 
 export default function Home() {
-  const [tab, setTab] = useState<Tab>('portfolio')
-  const [player, setPlayer] = useState<ActivePlayer | null>(null)
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
+  const [tab,          setTab]          = useState<Tab>('portfolio')
+  const [player,       setPlayer]       = useState<ActivePlayer | null>(null)
+  const [portfolio,    setPortfolio]    = useState<Portfolio | null>(null)
+  const [refreshing,   setRefreshing]   = useState(false)
   const [showSwitcher, setShowSwitcher] = useState(false)
-  const [ready, setReady] = useState(false)
+  const [ready,        setReady]        = useState(false)
 
   useEffect(() => {
     try {
@@ -70,8 +72,7 @@ export default function Home() {
     if (player) loadPortfolio(player.id)
   }, [player, loadPortfolio])
 
-  // Auto-refresh every 5 s — lives here so it uses the stable loadPortfolio
-  // callback and never gets cancelled by a portfolio data re-render
+  // Auto-refresh every 5 s
   useEffect(() => {
     if (!player) return
     const id = setInterval(() => loadPortfolio(player.id), 5_000)
@@ -90,8 +91,8 @@ export default function Home() {
     if (player) loadPortfolio(player.id)
   }
 
-  const totalReturn = portfolio ? portfolio.totalValue - portfolio.startingCash : null
-  const isUp = totalReturn != null ? totalReturn >= 0 : true
+  const totalReturn   = portfolio ? portfolio.totalValue - portfolio.startingCash : null
+  const isUp          = totalReturn != null ? totalReturn >= 0 : true
   const holdingTickers = portfolio?.positions.map(p => p.ticker) ?? []
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -111,9 +112,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      {/* Header */}
+      {/* ── Sticky header ──────────────────────────────────────────────── */}
       <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          {/* Left: logo + player selector */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <TrendingUp size={20} className="text-indigo-400" />
@@ -132,6 +134,7 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Right: portfolio stats + refresh */}
           <div className="flex items-center gap-5">
             {portfolio && (
               <>
@@ -156,7 +159,8 @@ export default function Home() {
               </>
             )}
             <button
-              onClick={handleRefresh} disabled={refreshing}
+              onClick={handleRefresh}
+              disabled={refreshing}
               className="p-1.5 text-gray-400 hover:text-white transition-colors disabled:opacity-40"
               title="Refresh"
             >
@@ -165,7 +169,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* ── Tabs ── */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <nav className="flex overflow-x-auto scrollbar-none">
             {tabs.map(t => (
@@ -186,7 +190,10 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Disclaimer banner */}
+      {/* ── Live ticker tape ─────────────────────────────────────────────── */}
+      <TickerTape />
+
+      {/* ── Disclaimer banner ─────────────────────────────────────────────── */}
       <div className="bg-indigo-950/40 border-b border-indigo-900/30">
         <p className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 text-center text-xs text-indigo-300/80">
           {player.is_private
@@ -195,7 +202,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Content */}
+      {/* ── Main content ──────────────────────────────────────────────────── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {tab === 'portfolio' && (
           <PortfolioTab portfolio={portfolio} playerId={player.id} onRefresh={handleRefresh} />
@@ -227,7 +234,16 @@ export default function Home() {
         )}
       </main>
 
-      {/* Player switcher overlay */}
+      {/* ── News toast popups (global, all tabs) ──────────────────────── */}
+      <NewsToast
+        playerId={player.id}
+        cash={portfolio?.cash ?? 0}
+        positions={portfolio?.positions ?? []}
+        holdingTickers={holdingTickers}
+        onPortfolioRefresh={handleRefresh}
+      />
+
+      {/* ── Player switcher overlay ───────────────────────────────────── */}
       {showSwitcher && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"

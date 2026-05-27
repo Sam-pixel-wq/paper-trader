@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { getMockStocks } from '@/lib/mockData'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,20 +18,20 @@ interface StockRow {
   marketCap?: number; sparkline: number[]
 }
 
-// In-memory cache: keyed by sorted ticker list
+// In-memory cache keyed by sorted ticker list
 const cache = new Map<string, { rows: StockRow[]; expires: number }>()
-const CACHE_TTL = 60_000 // 60 s
+const CACHE_TTL = 60_000
 
 async function fetchOneChart(ticker: string): Promise<StockRow | null> {
   try {
-    // 5-day range gives us both a current quote AND enough closes for a sparkline
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=5d`
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' },
+      signal: AbortSignal.timeout(4000),
     })
     if (!res.ok) return null
 
-    const json = await res.json()
+    const json   = await res.json()
     const result = json?.chart?.result?.[0]
     const meta   = result?.meta
     if (!meta) return null
@@ -41,19 +42,16 @@ async function fetchOneChart(ticker: string): Promise<StockRow | null> {
     const prev: number | undefined = meta.chartPreviousClose
     const change    = typeof prev === 'number' ? price - prev : 0
     const changePct = typeof prev === 'number' && prev !== 0 ? (change / prev) * 100 : 0
-
-    // Collect valid daily closes for sparkline (includes today as last point)
     const rawCloses: (number | null)[] = result?.indicators?.quote?.[0]?.close ?? []
-    const sparkline = rawCloses
-      .filter((c): c is number => c != null && !Number.isNaN(c))
+    const sparkline = rawCloses.filter((c): c is number => c != null && !Number.isNaN(c))
 
     return {
       ticker,
-      name: (meta.longName || meta.shortName || ticker) as string,
+      name:      (meta.longName || meta.shortName || ticker) as string,
       price,
       change,
       changePct,
-      volume: (meta.regularMarketVolume ?? 0) as number,
+      volume:    (meta.regularMarketVolume ?? 0) as number,
       marketCap: meta.marketCap as number | undefined,
       sparkline,
     }
@@ -64,18 +62,25 @@ async function fetchOneChart(ticker: string): Promise<StockRow | null> {
 
 async function batchFetch(tickers: string[]): Promise<StockRow[]> {
   const cacheKey = tickers.join(',')
-  const cached = cache.get(cacheKey)
+  const cached   = cache.get(cacheKey)
   if (cached && cached.expires > Date.now()) return cached.rows
 
+  // Try live Yahoo Finance first
   const results = await Promise.allSettled(tickers.map(fetchOneChart))
   const rows = results
     .map(r => (r.status === 'fulfilled' ? r.value : null))
     .filter((r): r is StockRow => r !== null)
 
-  if (rows.length > 0) {
+  if (rows.length >= tickers.length * 0.5) {
+    // Enough real data came back — use it
     cache.set(cacheKey, { rows, expires: Date.now() + CACHE_TTL })
+    return rows
   }
-  return rows
+
+  // Fall back to mock data for all tickers
+  const mock = getMockStocks(tickers)
+  cache.set(cacheKey, { rows: mock, expires: Date.now() + CACHE_TTL })
+  return mock
 }
 
 export async function GET(req: NextRequest) {
@@ -90,6 +95,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(await batchFetch(tickers))
   } catch (err) {
     console.error('Stocks error:', err)
-    return NextResponse.json([])
+    return NextResponse.json(getMockStocks(tickers))
   }
 }

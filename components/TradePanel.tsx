@@ -101,7 +101,7 @@ export default function TradePanel({ quote, cash, playerId, existingShares = 0, 
 
         <div className="p-5">
           {/* Chart */}
-          <StockChart ticker={quote.ticker} />
+          <StockChart ticker={quote.ticker} currentPrice={quote.price} />
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2 my-4 text-xs">
