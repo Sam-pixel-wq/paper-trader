@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { getDb, type Position, type Player, type Bracket } from '@/lib/db'
 import { fetchQuote, yahooErrorMessage } from '@/lib/marketData'
+import { getMockQuote } from '@/lib/mockData'
 
 export async function POST(req: NextRequest) {
   const body = await req.json() as {
@@ -14,7 +15,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const quoteData = await fetchQuote(ticker)
+    let quoteData
+    try {
+      quoteData = await fetchQuote(ticker)
+    } catch {
+      quoteData = getMockQuote(ticker)
+    }
     const price = quoteData?.price as number | undefined
     if (!price) return NextResponse.json({ error: 'Could not get current price' }, { status: 400 })
 
