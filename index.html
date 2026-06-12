@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S&J Digital Co. | Web Design & Development</title>
+<meta name="description" content="S&J Digital Co. — Custom websites that convert. Starting at $250.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+<style>
+:root{
+  --bg:#faf8f5;--surface:#fff;--surface2:#f3f0ec;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.11);
+  --accent:#b09fea;--accent2:#89d4c0;
+  --text:#1e1b2e;--muted:#8a8499;--muted2:#a8a3b8;
+  --grad:linear-gradient(150deg,#1a1a2e,#4a4580);
+  --gaccent:linear-gradient(135deg,#b09fea,#89d4c0);
+  --t:.22s ease;
+  --r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
+button{font-family:inherit;cursor:pointer;}
+
+/* PAGE SYSTEM */
+.page{display:none;}
+.page.active{display:block;animation:pin .35s ease both;}
+@keyframes pin{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes orb{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,-15px);}}
+@keyframes up{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* UTILS */
+.gt{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ga{background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.lbl{display:inline-flex;align-items:center;gap:.45rem;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem;}
+.lbl::before{content:'';width:16px;height:1.5px;background:var(--gaccent);border-radius:2px;}
+.ttl{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,3.8vw,2.85rem);font-weight:800;letter-spacing:-.03em;line-height:1.08;margin-bottom:.7rem;}
+.sub{color:var(--muted);font-size:.95rem;line-height:1.75;max-width:520px;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.vis{opacity:1;transform:none;}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}
+.bdg{display:inline-flex;align-items:center;padding:.18rem .6rem;border-radius:100px;font-size:.68rem;font-weight:500;}
+.ba{background:rgba(176,159,234,.13);color:var(--accent);border:1px solid rgba(176,159,234,.28);}
+.bm{background:rgba(137,212,192,.13);color:#4f9e8c;border:1px solid rgba(137,212,192,.28);}
+.bp{background:rgba(244,167,195,.13);color:#c05a80;border:1px solid rgba(244,167,195,.28);}
+.stars{color:#f5a623;font-size:.82rem;letter-spacing:1px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all var(--t);}
+.btn-p{background:var(--text);color:#fff;padding:.8rem 1.65rem;font-size:.875rem;box-shadow:0 3px 16px rgba(30,27,46,.18);}
+.btn-p:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(176,159,234,.3);}
+.btn-s{background:var(--surface);color:var(--text);padding:.8rem 1.65rem;font-size:.875rem;border:1px solid var(--border2);}
+.btn-s:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+.btn-lg{padding:.9rem 2rem;font-size:.95rem;}
+.btn-arr::after{content:'→';transition:transform var(--t);}
+.btn-arr:hover::after{transform:translateX(3px);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;display:flex;align-items:center;justify-content:space-between;padding:.9rem 3rem;background:rgba(250,248,245,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:box-shadow var(--t);}
+nav.sc{box-shadow:0 2px 20px rgba(176,159,234,.1);}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--text);background:none;border:none;letter-spacing:-.02em;}
+.logo-dot{display:inline-block;width:5px;height:5px;background:var(--gaccent);border-radius:50%;margin-left:2px;vertical-align:super;}
+.nl{display:flex;gap:.15rem;list-style:none;align-items:center;}
+.nl button{background:none;border:none;color:var(--muted);font-size:.85rem;font-weight:400;padding:.38rem .7rem;border-radius:8px;transition:color var(--t),background var(--t);}
+.nl button:hover,.nl button.al{color:var(--text);background:var(--surface2);}
+.ncta{background:var(--text)!important;color:#fff!important;padding:.46rem 1.15rem!important;border-radius:100px!important;font-weight:500!important;font-size:.82rem!important;}
+.ncta:hover{background:var(--accent)!important;transform:translateY(-1px)!important;}
+.navail{display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--muted);border:1px solid var(--border);padding:.25rem .65rem;border-radius:100px;}
+.navail .dot{width:5px;height:5px;background:#5bb89e;border-radius:50%;animation:pulse 2s infinite;}
+@media(max-width:768px){.nl{display:none;}.hbg{display:flex;}}
+
+/* HAMBURGER */
+.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer;z-index:700;}
+.hbg span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s ease;}
+.hbg.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hbg.open span:nth-child(2){opacity:0;}
+.hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mob-nav{position:fixed;inset:0;background:rgba(250,248,245,.97);backdrop-filter:blur(20px);z-index:650;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.75rem;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.mob-nav.open{opacity:1;pointer-events:auto;}
+.mob-nav button{background:none;border:none;font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text);letter-spacing:-.03em;transition:color var(--t);}
+.mob-nav button:hover{color:var(--accent);}
+.mob-nav .mob-cta{background:var(--text);color:#fff;padding:.75rem 2rem;border-radius:100px;font-size:1rem;}
+.mob-nav .mob-cta:hover{background:var(--accent);}
+
+/* ARTICLE PAGE */
+.art-wrap{max-width:720px;margin:0 auto;}
+.art-hero{margin-bottom:2.5rem;}
+.art-tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;}
+.art-title{font-family:'Syne',sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.85rem;}
+.art-meta{font-size:.78rem;color:var(--muted2);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.art-body{font-size:.97rem;line-height:1.85;color:var(--text);}
+.art-body h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin:2.25rem 0 .75rem;letter-spacing:-.02em;}
+.art-body h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin:1.75rem 0 .5rem;color:var(--accent);}
+.art-body p{margin-bottom:1.1rem;color:var(--text);}
+.art-body ul,.art-body ol{margin:0 0 1.1rem 1.5rem;display:flex;flex-direction:column;gap:.45rem;}
+.art-body li{line-height:1.75;}
+.art-body strong{font-weight:600;color:var(--text);}
+.art-callout{background:rgba(176,159,234,.08);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:1.1rem 1.35rem;margin:1.5rem 0;font-size:.92rem;color:var(--text);line-height:1.75;}
+.art-cta-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:2rem;text-align:center;margin-top:3rem;}
+.art-cta-box h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:.5rem;}
+.art-cta-box p{color:var(--muted);font-size:.88rem;margin-bottom:1.25rem;}
+.bpost{cursor:pointer;}
+
+/* BLOG */
+.blg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;}
+.bpost{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--t);}
+.bpost:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(176,159,234,.13);border-color:rgba(176,159,234,.28);}
+.bpost-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.bpost-body{padding:1.35rem;}
+.bpost-tag{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
+.bpost-body h3{font-family:'Syne',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:.4rem;line-height:1.35;}
+.bpost-body p{color:var(--muted);font-size:.8rem;line-height:1.6;margin-bottom:.85rem;}
+.bpost-meta{font-size:.7rem;color:var(--muted2);}
+
+/* REFERRAL */
+.ref-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.ref-steps{display:flex;flex-direction:column;gap:1.1rem;margin-top:1.5rem;}
+.ref-step{display:flex;gap:1rem;align-items:flex-start;}
+.ref-num{width:34px;height:34px;border-radius:50%;background:var(--gaccent);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;color:#fff;flex-shrink:0;}
+.ref-step h4{font-family:'Syne',sans-serif;font-size:.93rem;font-weight:700;margin-bottom:.2rem;}
+.ref-step p{color:var(--muted);font-size:.82rem;line-height:1.6;}
+.ref-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;position:relative;overflow:hidden;}
+.ref-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gaccent);}
+.ref-amount{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;line-height:1;margin-bottom:.4rem;}
+@media(max-width:900px){.blg{grid-template-columns:1fr 1fr;}.ref-wrap{grid-template-columns:1fr;}}
+@media(max-width:520px){.blg{grid-template-columns:1fr;}}
+
+/* PROJECT PREVIEW MODAL */
+.pmodal{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;background:rgba(30,27,46,.7);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.pmodal.open{opacity:1;pointer-events:auto;}
+.pmodal-inner{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);width:92%;max-width:1100px;height:88vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px);transition:transform .25s ease;box-shadow:0 24px 80px rgba(0,0,0,.25);}
+.pmodal.open .pmodal-inner{transform:translateY(0);}
+.pmodal-bar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.pmodal-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;}
+.pmodal-close{background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--muted);transition:all var(--t);}
+.pmodal-close:hover{background:var(--text);color:#fff;border-color:var(--text);}
+.pmodal iframe{flex:1;border:none;width:100%;height:100%;}
+
+/* MACBOOK HERO MOCKUP */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem 0;position:relative;overflow:hidden;}
+.hero-inner-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1140px;width:100%;position:relative;z-index:2;}
+.hi{text-align:left;max-width:none;}
+.hpill{margin-bottom:1.5rem;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,5vw,4.2rem);line-height:.97;letter-spacing:-.045em;margin-bottom:1.35rem;animation:up .5s .1s ease both;}
+.hero h1 .l2{display:block;}
+.hctas{justify-content:flex-start;}
+.htr{justify-content:flex-start;gap:1rem;}
+.mac-wrap{position:relative;perspective:1200px;animation:up .6s .2s ease both;}
+.mac-scene{transform:rotateY(-22deg) rotateX(6deg) rotateZ(2deg);transform-style:preserve-3d;filter:drop-shadow(0 40px 80px rgba(30,27,46,.45)) drop-shadow(0 0 60px rgba(176,159,234,.2));}
+.mac-scene:hover{transform:rotateY(-18deg) rotateX(4deg) rotateZ(1deg);transition:transform .6s ease;}
+@keyframes macfloat{0%,100%{transform:rotateY(-22deg) rotateX(6deg) rotateZ(2deg) translateY(0);}50%{transform:rotateY(-22deg) rotateX(6deg) rotateZ(2deg) translateY(-10px);}}
+.mac-scene{animation:macfloat 6s ease-in-out infinite;}
+@media(max-width:900px){
+  .hero-inner-wrap{grid-template-columns:1fr;text-align:center;}
+  .hctas{justify-content:center;}
+  .htr{justify-content:center;}
+  .hi{text-align:center;}
+  .mac-wrap{max-width:480px;margin:0 auto;}
+  .mac-scene{transform:rotateY(0deg) rotateX(4deg) rotateZ(0deg);animation:none;}
+}
+.fcta{position:fixed;bottom:1.75rem;right:1.75rem;z-index:590;background:var(--text);color:#fff;border:none;border-radius:100px;padding:.78rem 1.4rem;font-size:.83rem;font-weight:500;box-shadow:0 6px 24px rgba(30,27,46,.25);transition:all var(--t);display:flex;align-items:center;gap:.45rem;opacity:0;pointer-events:none;}
+.fcta:hover{background:var(--accent);transform:translateY(-2px);}
+.pdot{width:7px;height:7px;background:#89d4c0;border-radius:50%;animation:pulse 1.5s infinite;}
+
+/* BACK BTN */
+.back{display:inline-flex;align-items:center;gap:.35rem;background:none;border:none;color:var(--muted);font-size:.8rem;padding:0;margin-bottom:.4rem;transition:color var(--t);}
+.back:hover{color:var(--text);}
+
+/* INNER PAGE SHELL */
+.ip{padding-top:4.5rem;}
+.ph{padding:2.5rem 2.5rem 2rem;max-width:1140px;margin:0 auto;border-bottom:1px solid var(--border);margin-bottom:2.5rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.phn{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:rgba(0,0,0,.035);letter-spacing:-.06em;line-height:1;margin-bottom:-.4rem;user-select:none;}
+.ic{padding:0 2.5rem 4.5rem;max-width:1140px;margin:0 auto;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 1.5rem 0;position:relative;overflow:hidden;}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(176,159,234,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(176,159,234,.05) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 20%,transparent 100%);pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(55px);pointer-events:none;}
+.o1{width:600px;height:600px;background:radial-gradient(circle,rgba(176,159,234,.18),transparent 70%);top:-100px;left:50%;transform:translateX(-50%);animation:orb 14s ease-in-out infinite;}
+.o2{width:380px;height:380px;background:radial-gradient(circle,rgba(137,212,192,.13),transparent 70%);bottom:-40px;right:-80px;animation:orb 18s ease-in-out infinite reverse;}
+
+.hi{position:relative;z-index:2;max-width:860px;}
+.hsp{display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:1.75rem;animation:up .5s ease both;}
+.havs{display:flex;}
+.hav{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);background:var(--gaccent);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:#fff;margin-left:-7px;}
+.hav:first-child{margin-left:0;}
+.spt{font-size:.79rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;}
+.spt strong{color:var(--text);font-weight:600;}
+.hdiv{width:1px;height:18px;background:var(--border2);}
+.hpill{display:inline-flex;align-items:center;gap:.45rem;background:rgba(176,159,234,.1);border:1px solid rgba(176,159,234,.3);color:var(--accent);font-size:.67rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .9rem;border-radius:100px;margin-bottom:1.5rem;animation:up .5s .05s ease both;}
+.ldot{width:5px;height:5px;background:var(--accent2);border-radius:50%;animation:pulse 1.5s infinite;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.8rem,7.5vw,6rem);line-height:.97;letter-spacing:-.045em;margin-bottom:1.35rem;animation:up .5s .1s ease both;}
+.hero h1 .l2{display:block;background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hsub{font-size:1.05rem;color:var(--muted);max-width:540px;margin:0 auto 2.25rem;line-height:1.8;animation:up .5s .18s ease both;}
+.hctas{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;animation:up .5s .25s ease both;}
+.htr{display:flex;align-items:center;justify-content:center;gap:1.75rem;flex-wrap:wrap;animation:up .5s .32s ease both;}
+.tri{display:flex;align-items:center;gap:.4rem;font-size:.76rem;color:var(--muted);}
+.tri strong{color:var(--text);font-weight:600;}
+.hmq{width:100%;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface2);padding:.65rem 0;margin-top:3.5rem;position:relative;z-index:2;}
+.hmqr{display:flex;gap:2.75rem;animation:marquee 26s linear infinite;width:max-content;}
+.mqi{display:flex;align-items:center;gap:.45rem;font-size:.73rem;font-weight:500;color:var(--muted);white-space:nowrap;}
+.mqd{width:3px;height:3px;background:var(--accent);border-radius:50%;}
+
+/* STATS */
+.ss{padding:3rem 0;background:var(--surface);}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);max-width:1140px;margin:0 auto;padding:0 2.5rem;}
+.si{text-align:center;padding:1.25rem .75rem;border-right:1px solid var(--border);}
+.si:last-child{border-right:none;}
+.sn{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:.2rem;}
+.sl{font-size:.77rem;color:var(--muted);}
+
+/* LOGOS */
+.ls{padding:2.25rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.ll{text-align:center;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:1.5rem;}
+.lg{display:flex;justify-content:center;align-items:center;gap:2.5rem;flex-wrap:wrap;max-width:1140px;margin:0 auto;padding:0 2.5rem;}
+.li{font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;color:var(--muted2);opacity:.5;transition:opacity var(--t);}
+.li:hover{opacity:.9;}
+
+/* MENU CARDS */
+.ms{padding:4.5rem 0;}
+.msh{text-align:center;margin-bottom:2.5rem;}
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;max-width:1140px;margin:0 auto;padding:0 2.5rem;}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;transition:all var(--t);text-align:left;position:relative;overflow:hidden;width:100%;color:var(--text);}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gaccent);opacity:0;transition:opacity var(--t);}
+.mc::after{content:'→';position:absolute;bottom:1.35rem;right:1.6rem;color:var(--muted2);font-size:.95rem;transition:transform var(--t),color var(--t);}
+.mc:hover{border-color:rgba(176,159,234,.38);transform:translateY(-4px);box-shadow:0 14px 40px rgba(176,159,234,.15);}
+.mc:hover::before{opacity:1;}
+.mc:hover::after{transform:translateX(4px);color:var(--accent);}
+.mcicon{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;background:var(--surface2);}
+.mc h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;}
+.mc p{color:var(--muted);font-size:.8rem;line-height:1.55;}
+.mc .mcb{margin-top:.75rem;}
+.mcf{grid-column:span 2;}
+
+/* SERVICES */
+.svg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;}
+.svc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;transition:all var(--t);position:relative;overflow:hidden;}
+.svc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gaccent);opacity:0;transition:opacity var(--t);}
+.svc:hover{border-color:rgba(176,159,234,.32);transform:translateY(-3px);box-shadow:0 10px 28px rgba(176,159,234,.12);}
+.svc:hover::before{opacity:1;}
+.svico{width:46px;height:46px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin-bottom:1.1rem;background:rgba(176,159,234,.1);}
+.svc h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+.svc p{color:var(--muted);font-size:.84rem;line-height:1.6;}
+.svcp{margin-top:.85rem;font-size:.75rem;font-weight:600;color:var(--accent);}
+
+/* PORTFOLIO */
+.pff{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:2rem;}
+.fb{background:none;border:1px solid var(--border);border-radius:100px;padding:.32rem .85rem;font-size:.77rem;color:var(--muted);transition:all var(--t);}
+.fb.fa,.fb:hover{background:var(--text);color:#fff;border-color:var(--text);}
+.pgd{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.pcard{border-radius:var(--r);overflow:hidden;background:var(--surface);border:1px solid var(--border);transition:all var(--t);}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(176,159,234,.15);border-color:rgba(176,159,234,.28);}
+.pcard.pf{grid-column:span 2;}
+.pprev{height:240px;position:relative;overflow:hidden;}
+.pcard.pf .pprev{height:320px;}
+.pscr{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.msite{width:87%;height:82%;background:#fff;border-radius:7px 7px 0 0;box-shadow:0 6px 22px rgba(0,0,0,.09);overflow:hidden;display:flex;flex-direction:column;transition:transform .38s ease;}
+.pcard:hover .msite{transform:translateY(-6px);}
+.mnav{height:27px;background:#f9f9f9;display:flex;align-items:center;padding:0 10px;gap:5px;border-bottom:1px solid #eee;}
+.md{width:7px;height:7px;border-radius:50%;}
+.mbody{flex:1;padding:12px;display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.mh{border-radius:4px;flex-shrink:0;}
+.mr{display:flex;gap:7px;flex-shrink:0;}
+.mco{flex:1;height:42px;border-radius:4px;background:#f0f0f0;}
+.mco.ma{background:linear-gradient(135deg,rgba(176,159,234,.38),rgba(137,212,192,.38));}
+.mt{height:8px;border-radius:3px;background:#f0f0f0;flex-shrink:0;}
+.mt.ms{width:52%;}
+.mt.mm{width:76%;}
+.pov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(30,27,46,.85) 100%);opacity:0;transition:opacity var(--t);display:flex;align-items:flex-end;padding:1.25rem;}
+.pcard:hover .pov{opacity:1;}
+.povc{color:#fff;}
+.povc h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:.18rem;}
+.povc p{font-size:.75rem;opacity:.78;}
+.pinf{padding:1.35rem;}
+.ptags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;}
+.pinf h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;}
+.pinf p{color:var(--muted);font-size:.8rem;line-height:1.58;margin-bottom:.85rem;}
+.pres{display:flex;gap:1.15rem;}
+.rnum{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rlbl{font-size:.67rem;color:var(--muted);}
+
+/* TESTIMONIALS */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;}
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;transition:all var(--t);position:relative;}
+.tc::before{content:'\201C';position:absolute;top:.9rem;right:1.4rem;font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:var(--border);line-height:1;}
+.tc:hover{border-color:rgba(176,159,234,.28);box-shadow:0 8px 24px rgba(176,159,234,.1);transform:translateY(-2px);}
+.tc.tft{border-color:rgba(176,159,234,.25);background:linear-gradient(135deg,rgba(176,159,234,.04),transparent);}
+.ttxt{font-size:.87rem;color:var(--text);line-height:1.78;margin:.85rem 0 1.35rem;font-style:italic;}
+.tau{display:flex;align-items:center;gap:.75rem;}
+.tav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tn{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;}
+.tr{font-size:.73rem;color:var(--muted);}
+
+/* CASE STUDIES */
+.csc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem;}
+.csc:hover{box-shadow:0 6px 22px rgba(176,159,234,.1);}
+.csh{padding:1.75rem 1.75rem 0;display:flex;align-items:flex-start;justify-content:space-between;gap:1.75rem;flex-wrap:wrap;}
+.csh h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.2rem;}
+.csh p{color:var(--muted);font-size:.8rem;}
+.cpills{display:flex;gap:.5rem;flex-wrap:wrap;}
+.rpill{background:rgba(137,212,192,.12);border:1px solid rgba(137,212,192,.28);color:#3d9d82;border-radius:100px;padding:.24rem .75rem;font-size:.72rem;font-weight:600;}
+.csb{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--border);margin-top:1.5rem;}
+.csc-col{padding:1.5rem 1.75rem;border-right:1px solid var(--border);}
+.csc-col:last-child{border-right:none;}
+.cclbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.65rem;}
+.csc-col p{font-size:.83rem;color:var(--muted);line-height:1.7;}
+.baft{display:flex;gap:.6rem;margin-top:.7rem;}
+.bai{flex:1;padding:.65rem;border-radius:8px;}
+.bbf{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.13);}
+.baf{background:rgba(137,212,192,.07);border:1px solid rgba(137,212,192,.18);}
+.bal{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;}
+.bbf .bal{color:#dc2626;}.baf .bal{color:#3d9d82;}
+.bav{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;}
+.bbf .bav{color:#dc2626;}.baf .bav{color:#3d9d82;}
+
+/* PROCESS */
+.pw{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.pstps{display:flex;flex-direction:column;}
+.stp{display:flex;gap:1.35rem;align-items:flex-start;padding:1.5rem 0;border-bottom:1px solid var(--border);}
+.stp:last-child{border-bottom:none;}
+.stp:hover .stpn{background:var(--text);color:#fff;border-color:var(--text);}
+.stpn{font-family:'Syne',sans-serif;font-size:.73rem;font-weight:700;color:var(--muted);border:1px solid var(--border);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--t);}
+.stpc h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.25rem;}
+.stpc p{color:var(--muted);font-size:.83rem;line-height:1.62;}
+.pvis{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2.25rem;text-align:center;position:sticky;top:5.25rem;overflow:hidden;}
+.pvis::after{content:'';position:absolute;width:240px;height:240px;background:radial-gradient(circle,rgba(137,212,192,.1),transparent 70%);bottom:-60px;right:-60px;pointer-events:none;}
+.pvinn{position:relative;z-index:1;}
+.pvico{font-size:4rem;margin-bottom:.9rem;display:block;}
+.pvh{margin-top:1.5rem;padding:1.1rem;background:rgba(176,159,234,.07);border-radius:10px;border:1px solid rgba(176,159,234,.18);}
+
+/* WHY US */
+.ww{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.wcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;display:flex;gap:.85rem;align-items:flex-start;transition:all var(--t);}
+.wcard:hover{border-color:rgba(176,159,234,.3);box-shadow:0 4px 16px rgba(176,159,234,.1);}
+.wico{font-size:1.25rem;flex-shrink:0;width:38px;height:38px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.wcard h4{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:.22rem;}
+.wcard p{color:var(--muted);font-size:.8rem;line-height:1.58;}
+.ctbl{width:100%;border-collapse:separate;border-spacing:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin-top:2rem;}
+.ctbl th{background:var(--surface2);padding:.85rem 1.1rem;text-align:left;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);}
+.ctbl th.sjc{background:rgba(176,159,234,.09);color:var(--accent);}
+.ctbl td{padding:.8rem 1.1rem;font-size:.8rem;border-bottom:1px solid var(--border);color:var(--muted);}
+.ctbl tr:last-child td{border-bottom:none;}
+.ctbl td.sjc{background:rgba(176,159,234,.04);color:var(--text);font-weight:500;}
+.ck{color:#3d9d82;font-weight:700;}.cx{color:#dc2626;font-weight:700;}
+
+/* PRICING */
+.prg{display:grid;grid-template-columns:repeat(4,1fr);gap:1.15rem;padding-top:1.15rem;}
+.prc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem;position:relative;transition:all var(--t);}
+.prc:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(176,159,234,.15);}
+.prc.prf{border-color:var(--accent);background:linear-gradient(160deg,rgba(176,159,234,.07),var(--surface));box-shadow:0 0 40px rgba(176,159,234,.14);}
+.pfbdg{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gaccent);color:#fff;font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.24rem .9rem;border-radius:100px;white-space:nowrap;}
+.ptier{font-size:.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem;}
+.pamt{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:.18rem;}
+.pamt sup{font-size:.95rem;vertical-align:super;}
+.pnote{color:var(--muted);font-size:.72rem;margin-bottom:1.35rem;}
+.pfeats{list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.52rem;}
+.pfeats li{display:flex;align-items:flex-start;gap:.45rem;color:var(--muted);font-size:.8rem;line-height:1.5;}
+.pfeats li::before{content:'✓';color:var(--accent2);font-weight:700;flex-shrink:0;}
+.pbtn{width:100%;padding:.75rem;border-radius:100px;text-align:center;font-weight:500;font-size:.83rem;font-family:'DM Sans',sans-serif;border:none;transition:all var(--t);}
+.pb-o{border:1px solid var(--border2);color:var(--text);background:transparent;}
+.pb-o:hover{border-color:var(--accent);color:var(--accent);}
+.pb-f{background:var(--text);color:#fff;box-shadow:0 3px 16px rgba(30,27,46,.18);}
+.pb-f:hover{background:var(--accent);}
+.pguar{margin-top:2rem;padding:1.1rem;background:rgba(137,212,192,.07);border:1px solid rgba(137,212,192,.18);border-radius:10px;display:flex;align-items:center;gap:.65rem;}
+.pgi{font-size:1.4rem;flex-shrink:0;}
+.pguar p{font-size:.81rem;color:var(--muted);line-height:1.58;}
+
+/* TRUST */
+.tmet{display:grid;grid-template-columns:repeat(4,1fr);gap:1.15rem;margin-bottom:2.5rem;}
+.tmc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;text-align:center;}
+.tmn{font-family:'Syne',sans-serif;font-size:2.35rem;font-weight:800;line-height:1;margin-bottom:.25rem;}
+.tml{font-size:.78rem;color:var(--muted);}
+.tbdg{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:2.5rem;}
+.tbc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem;display:flex;align-items:center;gap:.85rem;}
+.tbico{font-size:1.6rem;flex-shrink:0;}
+.tbc h4{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.18rem;}
+.tbc p{font-size:.75rem;color:var(--muted);}
+.pmets{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;}
+.pmc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem;text-align:center;}
+.pms{font-family:'Syne',sans-serif;font-size:2.35rem;font-weight:800;background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pmL{font-size:.73rem;color:var(--muted);margin-top:.2rem;}
+.pbw{height:4px;background:var(--surface2);border-radius:2px;margin-top:.65rem;}
+.pb{height:100%;border-radius:2px;background:var(--gaccent);}
+
+/* FAQ */
+.fql{display:flex;flex-direction:column;gap:.6rem;}
+.fqi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color var(--t);}
+.fqi.op{border-color:rgba(176,159,234,.28);}
+.fqq{width:100%;background:none;border:none;padding:1.1rem 1.35rem;display:flex;align-items:center;justify-content:space-between;text-align:left;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--text);gap:1rem;transition:color var(--t);}
+.fqq:hover{color:var(--accent);}
+.fqch{font-size:.82rem;transition:transform var(--t);flex-shrink:0;color:var(--muted);}
+.fqi.op .fqch{transform:rotate(180deg);color:var(--accent);}
+.fqa{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+.fqi.op .fqa{max-height:250px;}
+.fqai{padding:0 1.35rem 1.1rem;color:var(--muted);font-size:.84rem;line-height:1.78;}
+
+/* ABOUT */
+.astg{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;margin-bottom:3.5rem;}
+.atmg{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:3.5rem;}
+.avg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;margin-bottom:2.5rem;}
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2.25rem;position:relative;overflow:hidden;transition:all var(--t);}
+.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gaccent);}
+.tcard:hover{box-shadow:0 8px 24px rgba(176,159,234,.12);transform:translateY(-2px);}
+.tav2{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin-bottom:1.1rem;}
+.tcard h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.18rem;}
+.tcard p{font-size:.82rem;line-height:1.7;color:var(--muted);}
+.vcard{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;transition:all var(--t);}
+.vcard:hover{border-color:rgba(176,159,234,.28);}
+.vcico{font-size:1.35rem;margin-bottom:.75rem;}
+.vcard h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:.35rem;}
+.vcard p{color:var(--muted);font-size:.82rem;line-height:1.6;}
+
+/* CONTACT */
+.cw{display:grid;grid-template-columns:1fr 1.45fr;gap:3.5rem;align-items:start;}
+.cinf{display:flex;flex-direction:column;gap:1.35rem;}
+.cit{display:flex;gap:.9rem;align-items:flex-start;}
+.cicw{width:40px;height:40px;background:rgba(176,159,234,.1);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.cit h5{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;margin-bottom:.12rem;}
+.cit p{color:var(--muted);font-size:.82rem;}
+.bcrd{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem;margin-top:1.1rem;}
+.bcrd h5{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:.28rem;}
+.bcrd p{color:var(--muted);font-size:.8rem;margin-bottom:.8rem;}
+.bslts{display:flex;flex-wrap:wrap;gap:.4rem;}
+.slbtn{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.38rem .72rem;font-size:.73rem;transition:all var(--t);color:var(--text);}
+.slbtn:hover,.slbtn.sel{background:var(--accent);color:#fff;border-color:var(--accent);}
+.cf{display:flex;flex-direction:column;gap:.9rem;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.fgrp{display:flex;flex-direction:column;gap:.32rem;}
+.fgrp label{font-size:.72rem;font-weight:600;color:var(--text);letter-spacing:.02em;}
+.fgrp input,.fgrp select,.fgrp textarea{background:var(--surface);border:1.5px solid var(--border2);color:var(--text);padding:.75rem .9rem;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color var(--t),box-shadow var(--t);resize:none;}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(176,159,234,.12);}
+.fgrp select option{background:#fff;}
+.fsub{background:var(--text);color:#fff;border:none;padding:.88rem 1.75rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;transition:all var(--t);box-shadow:0 3px 16px rgba(30,27,46,.18);align-self:flex-start;display:flex;align-items:center;gap:.4rem;}
+.fsub:hover{background:var(--accent);box-shadow:0 8px 24px rgba(176,159,234,.3);transform:translateY(-2px);}
+.fmsg{display:none;padding:.9rem;background:rgba(137,212,192,.1);border:1px solid rgba(137,212,192,.25);border-radius:9px;color:#3d9d82;font-size:.85rem;text-align:center;}
+.fldmsg{background:rgba(176,159,234,.07);border:1px solid rgba(176,159,234,.2);border-radius:var(--r);padding:.9rem 1.1rem;font-size:.81rem;color:var(--accent);display:flex;align-items:center;gap:.45rem;}
+.selg{display:flex;flex-wrap:wrap;gap:.4rem;}
+.seb{background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:.4rem .85rem;font-size:.77rem;transition:all var(--t);color:var(--muted);}
+.seb:hover{border-color:var(--accent);color:var(--accent);}
+.seb.sea{background:rgba(176,159,234,.1);border-color:var(--accent);color:var(--accent);font-weight:500;}
+
+/* FOOTER */
+.ft{background:var(--text);color:rgba(255,255,255,.6);padding:3.5rem 0 1.75rem;}
+.ftg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;max-width:1140px;margin:0 auto;padding:0 2.5rem;margin-bottom:2.5rem;}
+.ftb h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:#fff;margin-bottom:.65rem;}
+.ftb p{font-size:.8rem;line-height:1.8;max-width:260px;margin-bottom:1.1rem;}
+.ftsc{display:flex;gap:.55rem;}
+.fsoc{width:32px;height:32px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all var(--t);}
+.fsoc:hover{background:rgba(176,159,234,.28);border-color:var(--accent);}
+.ftcol h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;color:#fff;margin-bottom:.85rem;letter-spacing:.05em;}
+.ftls{display:flex;flex-direction:column;gap:.42rem;}
+.ftlk{background:none;border:none;color:rgba(255,255,255,.48);font-family:'DM Sans',sans-serif;font-size:.78rem;text-align:left;padding:0;transition:color var(--t);}
+.ftlk:hover{color:#fff;}
+.ftbt{border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.85rem;max-width:1140px;margin:0 auto;padding:1.35rem 2.5rem 0;}
+.ftbt p{font-size:.73rem;}
+.ftlg{display:flex;gap:1.35rem;}
+.ftlg a{font-size:.73rem;color:rgba(255,255,255,.38);transition:color var(--t);}
+.ftlg a:hover{color:#fff;}
+.sftbt{border-top:none;padding-top:1.75rem;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  nav{padding:.85rem 2rem;}
+  .ftg{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:900px){
+  nav{padding:.8rem 1.25rem;}
+  .navail{display:none;}
+  .nl li:nth-child(n+3):not(:last-child){display:none;}
+  .hero h1{font-size:clamp(2.6rem,9vw,4.5rem);}
+  .sg,.tmet,.pmets{grid-template-columns:1fr 1fr;}
+  .si{border-right:none;border-bottom:1px solid var(--border);padding-bottom:1.1rem;}
+  .si:last-child,.si:nth-last-child(2):nth-child(odd){border-bottom:none;}
+  .mg{grid-template-columns:1fr 1fr;padding:0 1.25rem;}
+  .mcf{grid-column:span 2;}
+  .svg,.wg,.avg,.tbdg{grid-template-columns:1fr 1fr;}
+  .pgd{grid-template-columns:1fr;}
+  .pcard.pf{grid-column:span 1;}
+  .tg{grid-template-columns:1fr;}
+  .prg{grid-template-columns:1fr 1fr;}
+  .csb{grid-template-columns:1fr;}
+  .csc-col{border-right:none;border-bottom:1px solid var(--border);}
+  .csc-col:last-child{border-bottom:none;}
+  .pw,.ww,.cw,.astg,.atmg{grid-template-columns:1fr;}
+  .pvis{position:relative;top:0;}
+  .ph{flex-direction:column;align-items:flex-start;padding:2rem 1.25rem;}
+  .ic{padding:0 1.25rem 4rem;}
+  .ftg{grid-template-columns:1fr;}
+  .ftbt{flex-direction:column;text-align:center;}
+  .htr{gap:1.25rem;}
+  .hsp{flex-direction:column;gap:.7rem;}
+}
+@media(max-width:520px){
+  .mg{grid-template-columns:1fr;}
+  .mcf{grid-column:span 1;}
+  .prg,.tmet,.pmets,.avg,.tbdg{grid-template-columns:1fr;}
+  .fg{grid-template-columns:1fr;}
+  .hctas{flex-direction:column;align-items:center;}
+  .lg{gap:1.25rem;}
+  .wg{grid-template-columns:1fr;}
+}
+
+/* ===== 3D MACBOOK HERO ===== */
+.mac3d-wrap{
+  position:relative;
+  width:100%;
+  height:520px;
+  animation:up .6s .2s ease both;
+  cursor:default;
+}
+.mac3d-wrap canvas{
+  display:block;
+}
+/* Ambient glow rings behind the canvas (CSS layer) */
+.mac3d-glow{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.mac3d-glow::before{
+  content:'';
+  position:absolute;
+  width:420px;height:420px;
+  background:radial-gradient(circle,rgba(176,159,234,.22),transparent 65%);
+  top:50%;left:50%;
+  transform:translate(-50%,-56%);
+  filter:blur(40px);
+  animation:orb 14s ease-in-out infinite;
+}
+.mac3d-glow::after{
+  content:'';
+  position:absolute;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(137,212,192,.16),transparent 65%);
+  bottom:5%;right:5%;
+  filter:blur(35px);
+  animation:orb 18s ease-in-out infinite reverse;
+}
+.mac3d-wrap canvas{position:relative;z-index:1;display:block;}
+
+/* Mobile fallback: show SVG, hide canvas */
+.mac-mobile{display:none;}
+@media(max-width:900px){
+  .mac3d-wrap{display:none;}
+  .mac-mobile{display:block;}
+}
+
+/* Existing mac-wrap override for the right column on desktop */
+@media(min-width:901px){
+  .mac-wrap:not(.mac-mobile){display:none;}
+}
+
+/* Hero 2-col layout tweak for 3D */
+@media(min-width:901px){
+  .hero-inner-wrap{grid-template-columns:1fr 1.05fr;gap:2.5rem;align-items:center;}
+  .mac3d-wrap{height:500px;}
+}
+@media(max-width:900px){
+  .mac3d-wrap{height:400px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mnav">
+  <button class="logo" id="nav-home">S<span style="background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&amp;</span>J<span class="logo-dot"></span></button>
+  <ul class="nl">
+    <li><button id="nav-services">Services</button></li>
+    <li><button id="nav-portfolio">Work</button></li>
+    <li><button id="nav-pricing">Pricing</button></li>
+    <li><button id="nav-about">About</button></li>
+    <li><div class="navail"><div class="dot"></div>Accepting clients</div></li>
+    <li><button id="nav-contact" class="ncta">Get a Quote →</button></li>
+  </ul>
+  <button class="hbg" id="hbg-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mob-nav">
+  <button id="mn-home">Home</button>
+  <button id="mn-services">Services</button>
+  <button id="mn-portfolio">Work</button>
+  <button id="mn-process">Process</button>
+  <button id="mn-pricing">Pricing</button>
+  <button id="mn-about">About</button>
+  <button id="mn-contact" class="mob-cta">Get a Quote →</button>
+</div>
+<button class="fcta" id="floating-cta-btn"><div class="pdot"></div>Free Quote</button>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hgrid"></div>
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="hero-inner-wrap">
+      <!-- LEFT: TEXT -->
+      <div class="hi">
+        <div class="hpill"><div class="ldot"></div>Now Accepting Projects</div>
+        <h1 class="gt">Your Website Should<span class="l2">Make You Money</span></h1>
+        <p class="hsub">We build high-performance websites that turn visitors into paying customers. Custom-built, conversion-optimized, and live in weeks — not months.</p>
+        <div class="hctas">
+          <button class="btn btn-p btn-lg btn-arr" id="hero-cta-primary">Start Your Project</button>
+          <button class="btn btn-s btn-lg" id="hero-cta-portfolio">See Our Work</button>
+        </div>
+        <div class="htr">
+          <div class="tri">🔒 <strong>You own all files</strong></div>
+          <div class="tri">⚡ Live in <strong>2–3 weeks</strong></div>
+          <div class="tri">🎯 From <strong>$250</strong></div>
+          <div class="tri">📍 <strong>Long Island, NY</strong></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: 3D MACBOOK (Three.js desktop) -->
+      <div class="mac3d-wrap" id="mac3d-wrap">
+        <div class="mac3d-glow"></div>
+        <canvas id="mac3d-canvas"></canvas>
+      </div>
+
+      <!-- MOBILE FALLBACK: CSS/SVG MacBook -->
+      <div class="mac-wrap mac-mobile" id="mac-mobile">
+        <div class="mac-scene">
+          <svg viewBox="0 0 620 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;display:block;">
+            <defs>
+              <!-- Screen gradient (S&J site colors) -->
+              <linearGradient id="sjbg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#faf8f5"/>
+                <stop offset="100%" stop-color="#f0eefc"/>
+              </linearGradient>
+              <linearGradient id="sjaccent" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#b09fea"/>
+                <stop offset="100%" stop-color="#89d4c0"/>
+              </linearGradient>
+              <linearGradient id="sjhero" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a1a2e"/>
+                <stop offset="100%" stop-color="#2d2060"/>
+              </linearGradient>
+              <!-- MacBook body gradients -->
+              <linearGradient id="lidbg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d8d8d8"/>
+                <stop offset="100%" stop-color="#b8b8b8"/>
+              </linearGradient>
+              <linearGradient id="lidface" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2a2a2a"/>
+                <stop offset="100%" stop-color="#1a1a1a"/>
+              </linearGradient>
+              <linearGradient id="basebg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c8c8c8"/>
+                <stop offset="100%" stop-color="#a0a0a0"/>
+              </linearGradient>
+              <linearGradient id="baseface" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d0d0d0"/>
+                <stop offset="100%" stop-color="#b5b5b5"/>
+              </linearGradient>
+              <linearGradient id="keybdbg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#bebebe"/>
+                <stop offset="100%" stop-color="#9e9e9e"/>
+              </linearGradient>
+              <linearGradient id="screenglow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(176,159,234,0.4)"/>
+                <stop offset="100%" stop-color="rgba(137,212,192,0.1)"/>
+              </linearGradient>
+              <filter id="macglow">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+              <filter id="screenshadow">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.5)"/>
+              </filter>
+              <filter id="macshadow">
+                <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="rgba(30,27,46,0.5)"/>
+              </filter>
+              <clipPath id="screenclip">
+                <rect x="88" y="28" width="390" height="248" rx="4"/>
+              </clipPath>
+              <clipPath id="notchclip">
+                <rect x="0" y="0" width="620" height="420"/>
+              </clipPath>
+            </defs>
+
+            <!-- ═══ AMBIENT GLOW ═══ -->
+            <ellipse cx="310" cy="380" rx="240" ry="28" fill="rgba(176,159,234,0.22)" filter="url(#macglow)"/>
+            <ellipse cx="310" cy="290" rx="200" ry="15" fill="rgba(176,159,234,0.15)" filter="url(#macglow)"/>
+
+            <!-- ═══ LID (back) ═══ -->
+            <g filter="url(#macshadow)">
+              <!-- Lid outer shell -->
+              <rect x="68" y="12" width="432" height="278" rx="14" fill="url(#lidbg)"/>
+              <!-- Lid inner bezel -->
+              <rect x="74" y="18" width="420" height="266" rx="11" fill="url(#lidface)"/>
+              <!-- Apple logo area (subtle indent) -->
+              <ellipse cx="284" cy="6" rx="18" ry="4" fill="rgba(255,255,255,0.12)"/>
+
+              <!-- ═══ SCREEN ═══ -->
+              <rect x="86" y="26" width="394" height="252" rx="5" fill="#0d0d0d"/>
+              <!-- Screen content -->
+              <g clip-path="url(#screenclip)">
+                <!-- S&J website content -->
+                <rect x="88" y="28" width="390" height="248" fill="url(#sjbg)"/>
+
+                <!-- Nav bar -->
+                <rect x="88" y="28" width="390" height="26" fill="rgba(250,248,245,0.95)"/>
+                <rect x="88" y="53" width="390" height="1" fill="rgba(0,0,0,0.06)"/>
+                <text x="104" y="44" font-family="Arial" font-weight="800" font-size="8.5" fill="#1e1b2e">S&amp;J</text>
+                <rect x="116" y="39" width="4" height="4" rx="2" fill="url(#sjaccent)"/>
+                <text x="330" y="44" font-family="Arial" font-size="7" fill="#8a8499">Services</text>
+                <text x="358" y="44" font-family="Arial" font-size="7" fill="#8a8499">Work</text>
+                <text x="381" y="44" font-family="Arial" font-size="7" fill="#8a8499">Pricing</text>
+                <rect x="403" y="36" width="52" height="14" rx="7" fill="#1e1b2e"/>
+                <text x="429" y="45" font-family="Arial" font-size="6.5" fill="white" font-weight="600" text-anchor="middle">Get a Quote</text>
+
+                <!-- Hero section (dark) -->
+                <rect x="88" y="54" width="390" height="118" fill="url(#sjhero)"/>
+                <!-- Grid lines -->
+                <line x1="88" y1="72" x2="478" y2="72" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="88" y1="90" x2="478" y2="90" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="88" y1="108" x2="478" y2="108" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="88" y1="126" x2="478" y2="126" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="166" y1="54" x2="166" y2="172" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="244" y1="54" x2="244" y2="172" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="322" y1="54" x2="322" y2="172" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <line x1="400" y1="54" x2="400" y2="172" stroke="rgba(176,159,234,0.06)" stroke-width="1"/>
+                <!-- Orb glow -->
+                <ellipse cx="283" cy="100" rx="110" ry="60" fill="rgba(176,159,234,0.1)"/>
+                <!-- Pill badge -->
+                <rect x="232" y="62" width="102" height="12" rx="6" fill="rgba(176,159,234,0.18)" stroke="rgba(176,159,234,0.35)" stroke-width="0.5"/>
+                <circle cx="240" cy="68" r="2.5" fill="#89d4c0"/>
+                <text x="283" y="71.5" font-family="Arial" font-size="6" fill="#b09fea" font-weight="600" text-anchor="middle" letter-spacing="1">NOW ACCEPTING PROJECTS</text>
+                <!-- Main headline -->
+                <text x="283" y="92" font-family="Arial" font-weight="800" font-size="16" fill="white" text-anchor="middle">Your Website Should</text>
+                <text x="283" y="110" font-family="Arial" font-weight="800" font-size="16" fill="url(#sjaccent)" text-anchor="middle">Make You Money</text>
+                <!-- Subtext -->
+                <text x="283" y="124" font-family="Arial" font-size="6.5" fill="rgba(255,255,255,0.5)" text-anchor="middle">Custom-built websites that convert visitors into</text>
+                <text x="283" y="133" font-family="Arial" font-size="6.5" fill="rgba(255,255,255,0.5)" text-anchor="middle">paying customers. Live in weeks, not months.</text>
+                <!-- CTA buttons -->
+                <rect x="196" y="140" width="75" height="16" rx="8" fill="#1e1b2e"/>
+                <text x="233.5" y="150.5" font-family="Arial" font-size="6" fill="white" font-weight="600" text-anchor="middle">Start Your Project →</text>
+                <rect x="278" y="140" width="60" height="16" rx="8" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.75"/>
+                <text x="308" y="150.5" font-family="Arial" font-size="6" fill="rgba(255,255,255,0.7)" text-anchor="middle">See Our Work</text>
+                <!-- Trust row -->
+                <text x="162" y="166" font-family="Arial" font-size="5.5" fill="rgba(255,255,255,0.45)" text-anchor="middle">🔒 You own all files</text>
+                <text x="238" y="166" font-family="Arial" font-size="5.5" fill="rgba(255,255,255,0.45)" text-anchor="middle">⚡ 2–3 weeks</text>
+                <text x="304" y="166" font-family="Arial" font-size="5.5" fill="rgba(255,255,255,0.45)" text-anchor="middle">🎯 From $250</text>
+                <text x="378" y="166" font-family="Arial" font-size="5.5" fill="rgba(255,255,255,0.45)" text-anchor="middle">📍 Long Island, NY</text>
+
+                <!-- Marquee bar -->
+                <rect x="88" y="172" width="390" height="16" fill="#f3f0ec"/>
+                <rect x="88" y="172" width="390" height="1" fill="rgba(0,0,0,0.06)"/>
+                <rect x="88" y="187" width="390" height="1" fill="rgba(0,0,0,0.06)"/>
+                <text x="104" y="182.5" font-family="Arial" font-size="5.5" fill="#8a8499">● Custom Web Design</text>
+                <text x="195" y="182.5" font-family="Arial" font-size="5.5" fill="#8a8499">● E-Commerce</text>
+                <text x="260" y="182.5" font-family="Arial" font-size="5.5" fill="#8a8499">● SEO Optimization</text>
+                <text x="332" y="182.5" font-family="Arial" font-size="5.5" fill="#8a8499">● Landing Pages</text>
+                <text x="396" y="182.5" font-family="Arial" font-size="5.5" fill="#8a8499">● Performance</text>
+
+                <!-- Services section -->
+                <rect x="88" y="188" width="390" height="88" fill="#ffffff"/>
+                <text x="283" y="204" font-family="Arial" font-weight="800" font-size="9" fill="#1e1b2e" text-anchor="middle">Everything Your Business Needs Online</text>
+                <!-- Menu cards row -->
+                <rect x="96" y="210" width="115" height="56" rx="6" fill="#faf8f5" stroke="rgba(0,0,0,0.06)" stroke-width="0.75"/>
+                <text x="104" y="224" font-family="Arial" font-size="9">🎨</text>
+                <text x="104" y="235" font-family="Arial" font-weight="700" font-size="6.5" fill="#1e1b2e">Services</text>
+                <text x="104" y="245" font-family="Arial" font-size="5.5" fill="#8a8499">Custom design,</text>
+                <text x="104" y="253" font-family="Arial" font-size="5.5" fill="#8a8499">development &amp; more.</text>
+                <rect x="218" y="210" width="115" height="56" rx="6" fill="#faf8f5" stroke="rgba(0,0,0,0.06)" stroke-width="0.75"/>
+                <text x="226" y="224" font-family="Arial" font-size="9">🖥️</text>
+                <text x="226" y="235" font-family="Arial" font-weight="700" font-size="6.5" fill="#1e1b2e">Our Work</text>
+                <text x="226" y="245" font-family="Arial" font-size="5.5" fill="#8a8499">Real projects,</text>
+                <text x="226" y="253" font-family="Arial" font-size="5.5" fill="#8a8499">real results.</text>
+                <rect x="340" y="210" width="130" height="56" rx="6" fill="#faf8f5" stroke="rgba(176,159,234,0.25)" stroke-width="0.75"/>
+                <text x="348" y="224" font-family="Arial" font-size="9">✉️</text>
+                <text x="348" y="235" font-family="Arial" font-weight="700" font-size="6.5" fill="#1e1b2e">Start a Project</text>
+                <text x="348" y="245" font-family="Arial" font-size="5.5" fill="#8a8499">Free quote in 24h,</text>
+                <text x="348" y="253" font-family="Arial" font-size="5.5" fill="#8a8499">no commitment.</text>
+
+                <!-- Screen glare overlay -->
+                <rect x="88" y="28" width="390" height="248" fill="url(#screenglow)" opacity="0.08"/>
+                <!-- Top-left glare streak -->
+                <path d="M88 28 L200 28 L120 130 L88 130 Z" fill="rgba(255,255,255,0.035)"/>
+              </g>
+
+              <!-- Screen bezel edge shine -->
+              <rect x="86" y="26" width="394" height="252" rx="5" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+              <!-- Notch -->
+              <rect x="254" y="24" width="58" height="10" rx="5" fill="#1a1a1a"/>
+              <circle cx="283" cy="29" r="3" fill="#2a2a2a"/>
+              <circle cx="283" cy="29" r="1.2" fill="#3a3a3a"/>
+            </g>
+
+            <!-- ═══ HINGE ═══ -->
+            <rect x="68" y="287" width="432" height="8" rx="2" fill="url(#basebg)"/>
+            <rect x="68" y="287" width="432" height="4" rx="2" fill="rgba(255,255,255,0.15)"/>
+
+            <!-- ═══ BASE ═══ -->
+            <!-- Base top face -->
+            <path d="M52 295 L516 295 L536 318 L32 318 Z" fill="url(#baseface)"/>
+            <!-- Keyboard area -->
+            <path d="M72 295 L496 295 L510 310 L58 310 Z" fill="url(#keybdbg)"/>
+            <!-- Trackpad -->
+            <rect x="228" y="299" width="112" height="7" rx="3" fill="rgba(0,0,0,0.1)"/>
+            <!-- Key rows -->
+            <rect x="78" y="296" width="402" height="1.5" rx="0.75" fill="rgba(0,0,0,0.08)"/>
+            <rect x="78" y="299" width="402" height="1.5" rx="0.75" fill="rgba(0,0,0,0.06)"/>
+            <rect x="78" y="302" width="402" height="1.5" rx="0.75" fill="rgba(0,0,0,0.05)"/>
+            <rect x="78" y="305" width="402" height="1.5" rx="0.75" fill="rgba(0,0,0,0.04)"/>
+            <!-- Base underside -->
+            <path d="M32 318 L536 318 L530 328 L38 328 Z" fill="#999"/>
+            <!-- Rubber feet -->
+            <rect x="56" y="324" width="30" height="4" rx="2" fill="#7a7a7a"/>
+            <rect x="482" y="324" width="30" height="4" rx="2" fill="#7a7a7a"/>
+            <rect x="140" y="326" width="20" height="3" rx="1.5" fill="#7a7a7a"/>
+            <rect x="408" y="326" width="20" height="3" rx="1.5" fill="#7a7a7a"/>
+            <!-- Surface reflection -->
+            <path d="M52 295 L516 295 L536 318 L32 318 Z" fill="rgba(255,255,255,0.06)"/>
+          </svg>
+        </div>
+      </div><!-- end mac-mobile -->
+    </div>
+    <div class="hmq">
+      <div class="hmqr">
+        <div class="mqi"><div class="mqd"></div>Custom Web Design</div><div class="mqi"><div class="mqd"></div>E-Commerce</div><div class="mqi"><div class="mqd"></div>SEO Optimization</div><div class="mqi"><div class="mqd"></div>Landing Pages</div><div class="mqi"><div class="mqd"></div>Performance Audits</div><div class="mqi"><div class="mqd"></div>Conversion Optimization</div><div class="mqi"><div class="mqd"></div>Maintenance</div><div class="mqi"><div class="mqd"></div>Brand Identity</div>
+        <div class="mqi"><div class="mqd"></div>Custom Web Design</div><div class="mqi"><div class="mqd"></div>E-Commerce</div><div class="mqi"><div class="mqd"></div>SEO Optimization</div><div class="mqi"><div class="mqd"></div>Landing Pages</div><div class="mqi"><div class="mqd"></div>Performance Audits</div><div class="mqi"><div class="mqd"></div>Conversion Optimization</div><div class="mqi"><div class="mqd"></div>Maintenance</div><div class="mqi"><div class="mqd"></div>Brand Identity</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ms">
+    <div class="msh reveal"><div class="lbl">What We Do</div><h2 class="ttl gt">Everything Your Business<br>Needs Online</h2></div>
+    <div class="mg">
+      <button class="mc reveal" id="mc-services"><div class="mcicon">🎨</div><h3 class="gt">Services</h3><p>Custom design, development, e-commerce, SEO, and more.</p><div class="mcb"><span class="bdg ba">6 services</span></div></button>
+      <button class="mc reveal d1" id="mc-portfolio"><div class="mcicon">🖥️</div><h3 class="gt">Our Work</h3><p>See what we've built for our clients.</p></button>
+      <button class="mc reveal d2" id="mc-process"><div class="mcicon">⚙️</div><h3 class="gt">Our Process</h3><p>5-step workflow from discovery to launch. No surprises.</p></button>
+      <button class="mc reveal" id="mc-pricing"><div class="mcicon">💰</div><h3 class="gt">Pricing</h3><p>Flat-rate packages from $250. No hidden fees.</p><div class="mcb"><span class="bdg ba">From $250</span></div></button>
+      <button class="mc reveal d1" id="mc-about"><div class="mcicon">🏆</div><h3 class="gt">About S&amp;J</h3><p>Who we are and why clients trust us with their websites.</p></button>
+      <button class="mc mcf reveal d2" id="mc-contact"><div class="mcicon">✉️</div><h3 class="gt">Start a Project</h3><p>Free quote within 24 hours — no commitment needed. Tell us about your business and goals.</p><div class="mcb" style="margin-top:.75rem;"><span class="bdg bm">Free consultation</span></div></button>
+    </div>
+  </section>
+
+  <footer class="ft">
+    <div class="ftg">
+      <div class="ftb"><h3>S<span style="background:var(--gaccent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&amp;</span>J Digital Co.</h3><p>Custom websites that convert visitors into customers. Built fast, built right.</p><div class="ftsc"><div class="fsoc">𝕏</div><div class="fsoc">in</div><div class="fsoc">ig</div></div></div>
+      <div class="ftcol"><h4>Services</h4><div class="ftls"><button class="ftlk" id="fl-s1">Web Design</button><button class="ftlk" id="fl-s2">Development</button><button class="ftlk" id="fl-s3">E-Commerce</button><button class="ftlk" id="fl-s4">Landing Pages</button><button class="ftlk" id="fl-s5">SEO</button><button class="ftlk" id="fl-s6">Maintenance</button></div></div>
+      <div class="ftcol"><h4>Company</h4><div class="ftls"><button class="ftlk" id="fl-about">About Us</button><button class="ftlk" id="fl-portfolio">Our Work</button><button class="ftlk" id="fl-process">Process</button><button class="ftlk" id="fl-blog">Blog</button><button class="ftlk" id="fl-referral">Refer &amp; Earn $50</button><button class="ftlk" id="fl-faq">FAQ</button></div></div>
+      <div class="ftcol"><h4>Contact</h4><div class="ftls"><button class="ftlk" id="fl-contact">Get a Quote</button><a href="tel:5169131299" class="ftlk" style="color:rgba(255,255,255,.48);">(516) 913-1299</a><span class="ftlk" style="cursor:default;">hello@sjdigital.com</span><span class="ftlk" style="cursor:default;">Long Island, New York</span><span class="ftlk" style="cursor:default;">Reply &lt;24 hours</span></div></div>
+    </div>
+    <div class="ftbt"><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+  </footer>
+</div>
+
+<!-- SERVICES -->
+<div class="page" id="page-services">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-services">← Back</button><div class="phn">01</div><div class="lbl">What We Do</div><h1 class="ttl gt">End-to-End<br>Web Solutions</h1></div><p class="sub">From landing pages to full e-commerce platforms. Custom-built, never from a template.</p></div>
+    <div class="ic">
+      <div class="svg">
+        <div class="svc reveal"><div class="svico">🎨</div><h3 class="gt">Custom Web Design</h3><p>Bespoke, pixel-perfect designs tailored to your brand. Every site built from scratch.</p><div class="svcp">From $499</div></div>
+        <div class="svc reveal d1"><div class="svico">⚡</div><h3 class="gt">Web Development</h3><p>Fast, responsive, SEO-optimized code. Built to scale as your business grows.</p><div class="svcp">From $499</div></div>
+        <div class="svc reveal d2"><div class="svico">🛒</div><h3 class="gt">E-Commerce Stores</h3><p>Full-featured online stores with secure checkout and conversion-optimized product pages.</p><div class="svcp">From $2,499</div></div>
+        <div class="svc reveal"><div class="svico">📱</div><h3 class="gt">Landing Pages</h3><p>High-converting pages designed to capture leads and drive sales from day one.</p><div class="svcp">From $250</div></div>
+        <div class="svc reveal d1"><div class="svico">🔧</div><h3 class="gt">Maintenance &amp; Support</h3><p>Ongoing updates, security patches, and content changes so your site stays healthy.</p><div class="svcp">From $99/mo</div></div>
+        <div class="svc reveal d2"><div class="svico">📈</div><h3 class="gt">SEO &amp; Performance</h3><p>On-page SEO, Core Web Vitals, and speed audits so Google and users both love your site.</p><div class="svcp">From $299</div></div>
+      </div>
+      <div style="margin-top:2.5rem;text-align:center;"><button class="btn btn-p btn-lg btn-arr" id="srv-cta">Get a Free Quote</button></div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-2">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- PORTFOLIO -->
+<div class="page" id="page-portfolio">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-portfolio">← Back</button><div class="phn">02</div><div class="lbl">Our Work</div><h1 class="ttl gt">Projects That<br>Drove Real Results</h1></div><p class="sub">Built to solve specific business problems. Here's what we delivered — and the impact it had.</p></div>
+    <div class="ic">
+      <div class="pff reveal">
+        <button class="fb fa" data-filter="all">All</button>
+        <button class="fb" data-filter="web">Web Design</button>
+        <button class="fb" data-filter="ecom">E-Commerce</button>
+        <button class="fb" data-filter="landing">Landing Pages</button>
+      </div>
+      <div class="pgd">
+        <!-- TITAN TAX REALISTIC MOCKUP -->
+        <div class="pcard reveal" data-cat="web">
+          <div class="pprev" style="background:#e8e3f8;padding:0;overflow:hidden;">
+            <svg viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+              <defs>
+                <linearGradient id="tt-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#2d2060"/></linearGradient>
+                <linearGradient id="tt-btn" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#b09fea"/><stop offset="100%" stop-color="#89d4c0"/></linearGradient>
+                <filter id="shdw"><feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="rgba(0,0,0,0.35)"/></filter>
+                <clipPath id="tt-clip"><rect x="60" y="28" width="560" height="316" rx="8"/></clipPath>
+              </defs>
+              <rect width="680" height="360" fill="#e8e3f8"/>
+              <g filter="url(#shdw)"><rect x="60" y="14" width="560" height="332" rx="10" fill="#1e1c2e"/></g>
+              <rect x="60" y="14" width="560" height="36" rx="10" fill="#2a2740"/>
+              <rect x="60" y="36" width="560" height="14" fill="#2a2740"/>
+              <circle cx="82" cy="32" r="5" fill="#ff5f57"/>
+              <circle cx="97" cy="32" r="5" fill="#febc2e"/>
+              <circle cx="112" cy="32" r="5" fill="#28c840"/>
+              <rect x="130" y="22" width="380" height="18" rx="9" fill="#1a1828"/>
+              <text x="148" y="34" font-family="Arial" font-size="9" fill="#8a85a0">&#x1F512; titantaxadvisors.com</text>
+              <g clip-path="url(#tt-clip)">
+                <rect x="60" y="50" width="560" height="130" fill="#1a1a2e"/>
+                <ellipse cx="340" cy="100" rx="220" ry="90" fill="rgba(176,159,234,0.09)"/>
+                <rect x="60" y="50" width="560" height="26" fill="rgba(255,255,255,0.04)"/>
+                <text x="80" y="67" font-family="Arial" font-weight="700" font-size="9" fill="white">TITAN TAX ADVISORS</text>
+                <text x="438" y="67" font-family="Arial" font-size="8" fill="rgba(255,255,255,0.6)">Services</text>
+                <text x="478" y="67" font-family="Arial" font-size="8" fill="rgba(255,255,255,0.6)">About</text>
+                <text x="512" y="67" font-family="Arial" font-size="8" fill="rgba(255,255,255,0.6)">Contact</text>
+                <rect x="548" y="56" width="58" height="14" rx="7" fill="url(#tt-btn)"/>
+                <text x="577" y="66" font-family="Arial" font-size="7" fill="white" font-weight="600" text-anchor="middle">Free Call</text>
+                <text x="340" y="104" font-family="Arial" font-weight="800" font-size="19" fill="white" text-anchor="middle">Expert Tax Services</text>
+                <text x="340" y="124" font-family="Arial" font-weight="800" font-size="19" fill="url(#tt-btn)" text-anchor="middle">on Long Island</text>
+                <text x="340" y="142" font-family="Arial" font-size="8" fill="rgba(255,255,255,0.5)" text-anchor="middle">Trusted tax preparation &amp; advisory for individuals and businesses.</text>
+                <rect x="263" y="152" width="84" height="20" rx="10" fill="url(#tt-btn)"/>
+                <text x="305" y="165" font-family="Arial" font-size="7.5" fill="white" font-weight="600" text-anchor="middle">Book Free Call</text>
+                <rect x="356" y="152" width="72" height="20" rx="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <text x="392" y="165" font-family="Arial" font-size="7.5" fill="rgba(255,255,255,0.7)" text-anchor="middle">Our Services</text>
+                <rect x="60" y="180" width="560" height="96" fill="#f8f7ff"/>
+                <text x="340" y="200" font-family="Arial" font-weight="800" font-size="12" fill="#1a1a2e" text-anchor="middle">What We Do</text>
+                <rect x="76" y="207" width="122" height="56" rx="6" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <text x="137" y="228" font-family="Arial" font-size="14" text-anchor="middle">&#x1F4CB;</text>
+                <text x="137" y="242" font-family="Arial" font-weight="700" font-size="7.5" fill="#1a1a2e" text-anchor="middle">Tax Preparation</text>
+                <text x="137" y="253" font-family="Arial" font-size="6.5" fill="#8a8499" text-anchor="middle">Personal &amp; Business</text>
+                <rect x="206" y="207" width="122" height="56" rx="6" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <text x="267" y="228" font-family="Arial" font-size="14" text-anchor="middle">&#x1F4BC;</text>
+                <text x="267" y="242" font-family="Arial" font-weight="700" font-size="7.5" fill="#1a1a2e" text-anchor="middle">Tax Planning</text>
+                <text x="267" y="253" font-family="Arial" font-size="6.5" fill="#8a8499" text-anchor="middle">Year-round strategy</text>
+                <rect x="336" y="207" width="122" height="56" rx="6" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <text x="397" y="228" font-family="Arial" font-size="14" text-anchor="middle">&#x1F3E2;</text>
+                <text x="397" y="242" font-family="Arial" font-weight="700" font-size="7.5" fill="#1a1a2e" text-anchor="middle">Business Services</text>
+                <text x="397" y="253" font-family="Arial" font-size="6.5" fill="#8a8499" text-anchor="middle">LLC, S-Corp, C-Corp</text>
+                <rect x="466" y="207" width="122" height="56" rx="6" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <text x="527" y="228" font-family="Arial" font-size="14" text-anchor="middle">&#x1F50D;</text>
+                <text x="527" y="242" font-family="Arial" font-weight="700" font-size="7.5" fill="#1a1a2e" text-anchor="middle">IRS Representation</text>
+                <text x="527" y="253" font-family="Arial" font-size="6.5" fill="#8a8499" text-anchor="middle">Audit support</text>
+                <rect x="60" y="276" width="560" height="80" fill="#1a1a2e"/>
+                <text x="340" y="300" font-family="Arial" font-weight="800" font-size="11" fill="white" text-anchor="middle">Ready to Get Started?</text>
+                <text x="340" y="316" font-family="Arial" font-size="7.5" fill="rgba(255,255,255,0.5)" text-anchor="middle">Located on Long Island, NY &#xB7; Free consultations available</text>
+                <rect x="298" y="324" width="84" height="18" rx="9" fill="url(#tt-btn)"/>
+                <text x="340" y="336" font-family="Arial" font-size="7" fill="white" font-weight="600" text-anchor="middle">Contact Us Today</text>
+              </g>
+            </svg>
+            <div class="pov"><div class="povc"><h4>Titan Tax Advisors</h4><p>Business website + lead gen</p></div></div>
+          </div>
+          <div class="pinf"><div class="ptags"><span class="bdg ba">Web Design</span><span class="bdg bm">Lead Gen</span></div><h3 class="gt">Titan Tax Advisors</h3><p>Professional website for a Long Island tax advisory firm. Built from scratch with local SEO and a lead capture form.</p>
+          <button class="btn btn-p btn-arr" id="view-titan-tax" style="margin-top:1.1rem;font-size:.8rem;padding:.6rem 1.25rem;">View Project</button></div>
+        </div>
+        <!-- COMING SOON 1 -->
+        <div class="pcard reveal d1" data-cat="web" style="opacity:.7;">
+          <div class="pprev" style="padding:0;overflow:hidden;">
+            <svg viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+              <defs><linearGradient id="cs1b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0eefc"/><stop offset="100%" stop-color="#e8f8f4"/></linearGradient><filter id="cs1s"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,0.18)"/></filter><clipPath id="cs1c"><rect x="30" y="24" width="280" height="218" rx="6"/></clipPath></defs>
+              <rect width="340" height="260" fill="url(#cs1b)"/>
+              <g filter="url(#cs1s)"><rect x="30" y="12" width="280" height="232" rx="8" fill="white"/></g>
+              <rect x="30" y="12" width="280" height="24" rx="8" fill="#f3f3f3"/><rect x="30" y="28" width="280" height="8" fill="#f3f3f3"/>
+              <circle cx="45" cy="24" r="4" fill="#ff5f57"/><circle cx="57" cy="24" r="4" fill="#febc2e"/><circle cx="69" cy="24" r="4" fill="#28c840"/>
+              <rect x="88" y="18" width="155" height="12" rx="6" fill="#e8e8e8"/>
+              <g clip-path="url(#cs1c)">
+                <rect x="30" y="36" width="280" height="204" fill="#fafafa"/>
+                <rect x="50" y="56" width="110" height="9" rx="4" fill="#e0ddf5"/><rect x="50" y="72" width="195" height="16" rx="4" fill="#e8e5f8"/>
+                <rect x="50" y="95" width="165" height="7" rx="3" fill="#ede9f8"/><rect x="50" y="108" width="135" height="7" rx="3" fill="#ede9f8"/>
+                <rect x="50" y="124" width="78" height="20" rx="10" fill="rgba(176,159,234,0.4)"/>
+                <rect x="50" y="158" width="70" height="52" rx="5" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <rect x="128" y="158" width="70" height="52" rx="5" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <rect x="206" y="158" width="70" height="52" rx="5" fill="white" stroke="#ede9f8" stroke-width="1"/>
+                <rect x="56" y="167" width="58" height="6" rx="3" fill="#e8e5f8"/><rect x="56" y="178" width="44" height="5" rx="2" fill="#f0eef8"/>
+                <rect x="134" y="167" width="58" height="6" rx="3" fill="#e8e5f8"/><rect x="134" y="178" width="44" height="5" rx="2" fill="#f0eef8"/>
+                <rect x="212" y="167" width="58" height="6" rx="3" fill="#e8e5f8"/><rect x="212" y="178" width="44" height="5" rx="2" fill="#f0eef8"/>
+              </g>
+              <rect x="30" y="12" width="280" height="232" rx="8" fill="rgba(255,255,255,0.62)"/>
+              <text x="170" y="116" font-family="Arial" font-weight="800" font-size="13" fill="#b09fea" text-anchor="middle">Coming Soon</text>
+              <text x="170" y="133" font-family="Arial" font-size="9" fill="#8a8499" text-anchor="middle">Next client project</text>
+            </svg>
+          </div>
+          <div class="pinf"><div class="ptags"><span class="bdg ba">Next Project</span></div><h3 class="gt">More Work on the Way</h3><p>We're taking on new clients now. Your project could be featured here next.</p></div>
+        </div>
+        <!-- COMING SOON 2 -->
+        <div class="pcard reveal d1" data-cat="web" style="opacity:.7;">
+          <div class="pprev" style="padding:0;overflow:hidden;">
+            <svg viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+              <defs><linearGradient id="cs2b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fce8f0"/><stop offset="100%" stop-color="#e8e3f8"/></linearGradient><filter id="cs2s"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,0.18)"/></filter><clipPath id="cs2c"><rect x="30" y="24" width="280" height="218" rx="6"/></clipPath></defs>
+              <rect width="340" height="260" fill="url(#cs2b)"/>
+              <g filter="url(#cs2s)"><rect x="30" y="12" width="280" height="232" rx="8" fill="white"/></g>
+              <rect x="30" y="12" width="280" height="24" rx="8" fill="#f3f3f3"/><rect x="30" y="28" width="280" height="8" fill="#f3f3f3"/>
+              <circle cx="45" cy="24" r="4" fill="#ff5f57"/><circle cx="57" cy="24" r="4" fill="#febc2e"/><circle cx="69" cy="24" r="4" fill="#28c840"/>
+              <rect x="88" y="18" width="155" height="12" rx="6" fill="#e8e8e8"/>
+              <g clip-path="url(#cs2c)">
+                <rect x="30" y="36" width="280" height="204" fill="#fafafa"/>
+                <rect x="30" y="36" width="280" height="78" fill="rgba(244,167,195,0.14)"/>
+                <rect x="50" y="50" width="98" height="8" rx="3" fill="rgba(192,90,128,0.28)"/>
+                <rect x="50" y="64" width="176" height="14" rx="4" fill="rgba(192,90,128,0.18)"/>
+                <rect x="50" y="84" width="128" height="7" rx="3" fill="rgba(192,90,128,0.14)"/>
+                <rect x="50" y="100" width="68" height="17" rx="8" fill="rgba(244,167,195,0.5)"/>
+                <rect x="50" y="128" width="236" height="1" fill="#f0e8f4"/>
+                <rect x="50" y="140" width="78" height="7" rx="3" fill="#ede9f8"/><rect x="50" y="153" width="176" height="6" rx="3" fill="#f5f3fc"/><rect x="50" y="165" width="156" height="6" rx="3" fill="#f5f3fc"/>
+                <rect x="50" y="180" width="196" height="28" rx="5" fill="white" stroke="#f0e8f4" stroke-width="1"/>
+              </g>
+              <rect x="30" y="12" width="280" height="232" rx="8" fill="rgba(255,255,255,0.62)"/>
+              <text x="170" y="116" font-family="Arial" font-weight="800" font-size="13" fill="#c05a80" text-anchor="middle">Coming Soon</text>
+              <text x="170" y="133" font-family="Arial" font-size="9" fill="#8a8499" text-anchor="middle">Next client project</text>
+            </svg>
+          </div>
+          <div class="pinf"><div class="ptags"><span class="bdg bm">Next Project</span></div><h3 class="gt">More Work on the Way</h3><p>We're taking on new clients now. Your project could be featured here next.</p></div>
+        </div>
+        <!-- COMING SOON 3 -->
+        <div class="pcard reveal d2" data-cat="web" style="opacity:.7;">
+          <div class="pprev" style="padding:0;overflow:hidden;">
+            <svg viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+              <defs><linearGradient id="cs3b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8f8f4"/><stop offset="100%" stop-color="#e3f0fc"/></linearGradient><filter id="cs3s"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,0.18)"/></filter><clipPath id="cs3c"><rect x="30" y="24" width="280" height="218" rx="6"/></clipPath></defs>
+              <rect width="340" height="260" fill="url(#cs3b)"/>
+              <g filter="url(#cs3s)"><rect x="30" y="12" width="280" height="232" rx="8" fill="white"/></g>
+              <rect x="30" y="12" width="280" height="24" rx="8" fill="#f3f3f3"/><rect x="30" y="28" width="280" height="8" fill="#f3f3f3"/>
+              <circle cx="45" cy="24" r="4" fill="#ff5f57"/><circle cx="57" cy="24" r="4" fill="#febc2e"/><circle cx="69" cy="24" r="4" fill="#28c840"/>
+              <rect x="88" y="18" width="155" height="12" rx="6" fill="#e8e8e8"/>
+              <g clip-path="url(#cs3c)">
+                <rect x="30" y="36" width="280" height="204" fill="#f8fffe"/>
+                <rect x="30" y="36" width="138" height="204" fill="rgba(137,212,192,0.08)"/>
+                <rect x="48" y="52" width="78" height="8" rx="3" fill="rgba(79,158,138,0.24)"/>
+                <rect x="48" y="66" width="98" height="12" rx="4" fill="rgba(79,158,138,0.18)"/>
+                <rect x="48" y="84" width="88" height="6" rx="3" fill="rgba(79,158,138,0.14)"/>
+                <rect x="48" y="96" width="78" height="6" rx="3" fill="rgba(79,158,138,0.11)"/>
+                <rect x="48" y="110" width="58" height="15" rx="7" fill="rgba(137,212,192,0.5)"/>
+                <rect x="48" y="140" width="98" height="6" rx="3" fill="rgba(79,158,138,0.14)"/>
+                <rect x="48" y="152" width="78" height="6" rx="3" fill="rgba(79,158,138,0.1)"/>
+                <rect x="182" y="44" width="114" height="188" fill="rgba(137,212,192,0.05)"/>
+                <rect x="192" y="56" width="94" height="62" rx="5" fill="rgba(137,212,192,0.22)"/>
+                <rect x="192" y="126" width="94" height="8" rx="3" fill="rgba(137,212,192,0.2)"/>
+                <rect x="192" y="140" width="74" height="6" rx="3" fill="rgba(137,212,192,0.14)"/>
+              </g>
+              <rect x="30" y="12" width="280" height="232" rx="8" fill="rgba(255,255,255,0.62)"/>
+              <text x="170" y="116" font-family="Arial" font-weight="800" font-size="13" fill="#3d9d82" text-anchor="middle">Coming Soon</text>
+              <text x="170" y="133" font-family="Arial" font-size="9" fill="#8a8499" text-anchor="middle">Next client project</text>
+            </svg>
+          </div>
+          <div class="pinf"><div class="ptags"><span class="bdg bp">Next Project</span></div><h3 class="gt">More Work on the Way</h3><p>We're taking on new clients now. Your project could be featured here next.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-p">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- PROCESS -->
+<div class="page" id="page-process">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-process">← Back</button><div class="phn">03</div><div class="lbl">How It Works</div><h1 class="ttl gt">Simple,<br>Transparent Process</h1></div><p class="sub">No surprises. Here's exactly how we go from idea to a live, polished website.</p></div>
+    <div class="ic">
+      <div class="pw">
+        <div class="pstps reveal">
+          <div class="stp"><div class="stpn">01</div><div class="stpc"><h4 class="gt">Discovery Call</h4><p>Free 30-minute call to learn about your business, goals, and vision. No pressure, no pitch.</p></div></div>
+          <div class="stp"><div class="stpn">02</div><div class="stpc"><h4 class="gt">Design &amp; Wireframe</h4><p>We craft mockups and get your approval before writing a single line of code.</p></div></div>
+          <div class="stp"><div class="stpn">03</div><div class="stpc"><h4 class="gt">Development</h4><p>Clean, optimized code with regular progress updates so you're never left wondering.</p></div></div>
+          <div class="stp"><div class="stpn">04</div><div class="stpc"><h4 class="gt">Review &amp; Revisions</h4><p>You review the live preview and request changes. We iterate until it's exactly right.</p></div></div>
+          <div class="stp"><div class="stpn">05</div><div class="stpc"><h4 class="gt">Launch &amp; Handoff</h4><p>We deploy your site, hand over all files and credentials, and walk you through everything.</p></div></div>
+        </div>
+        <div class="pvis reveal d2">
+          <div class="pvinn">
+            <span class="pvico">🚀</span>
+            <h3 class="gt" style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.4rem;">Live in 1–3 Weeks</h3>
+            <p style="color:var(--muted);font-size:.86rem;">No bloated timelines. We move fast without cutting corners.</p>
+            <div class="pvh"><p style="color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:.83rem;margin-bottom:.22rem;">Free Consultation</p><p style="font-size:.79rem;color:var(--muted);">No commitment. Just a conversation about what you're building.</p></div>
+            <button class="btn btn-p btn-arr" id="proc-cta" style="margin-top:1.35rem;width:100%;justify-content:center;">Book a Call</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-3">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- WHY US -->
+<div class="page" id="page-why">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-why">← Back</button><div class="phn">04</div><div class="lbl">Why S&amp;J</div><h1 class="ttl gt">Built<br>Different</h1></div><p class="sub">You work directly with the developers building your site — not account managers passing messages along.</p></div>
+    <div class="ic">
+      <div class="ww">
+        <div class="reveal">
+          <p style="color:var(--muted);line-height:1.85;margin-bottom:1.35rem;">At S&amp;J, direct developer access means faster decisions, cleaner output, and a final product that actually matches your vision. We treat every project like our own business is on the line.</p>
+          <p style="color:var(--muted);line-height:1.85;margin-bottom:1.85rem;">Your success is our portfolio and our reputation.</p>
+          <button class="btn btn-p btn-arr" id="why-cta">Work With Us</button>
+        </div>
+        <div class="wg reveal d1">
+          <div class="wcard"><div class="wico">🎯</div><div><h4 class="gt">Results-Focused</h4><p>Every decision is made with conversions in mind.</p></div></div>
+          <div class="wcard"><div class="wico">💬</div><div><h4 class="gt">Direct Access</h4><p>Talk directly to us. No middlemen, no queues.</p></div></div>
+          <div class="wcard"><div class="wico">🔒</div><div><h4 class="gt">You Own Everything</h4><p>All files and code are yours. No lock-in, ever.</p></div></div>
+          <div class="wcard"><div class="wico">⚙️</div><div><h4 class="gt">Built to Last</h4><p>Clean, documented code that stays fast for years.</p></div></div>
+          <div class="wcard"><div class="wico">⚡</div><div><h4 class="gt">Fast Delivery</h4><p>Most sites live in under 3 weeks.</p></div></div>
+          <div class="wcard"><div class="wico">💡</div><div><h4 class="gt">Strategic Thinking</h4><p>We ask the right questions from the start.</p></div></div>
+        </div>
+      </div>
+      <div style="margin-top:3.5rem;" class="reveal">
+        <div class="lbl">Honest Comparison</div>
+        <h2 class="ttl gt" style="font-size:1.65rem;margin-bottom:1.75rem;">S&amp;J vs. The Alternatives</h2>
+        <table class="ctbl">
+          <thead><tr><th>Feature</th><th class="sjc">S&amp;J Digital Co.</th><th>Large Agencies</th><th>Freelancers</th></tr></thead>
+          <tbody>
+            <tr><td>Direct developer access</td><td class="sjc"><span class="ck">✓ Always</span></td><td><span class="cx">✗ Account managers</span></td><td><span class="ck">✓ Yes</span></td></tr>
+            <tr><td>Custom design (no templates)</td><td class="sjc"><span class="ck">✓ Every project</span></td><td><span class="ck">✓ Yes</span></td><td>Varies</td></tr>
+            <tr><td>Typical timeline</td><td class="sjc"><span class="ck">1–3 weeks</span></td><td><span class="cx">2–6 months</span></td><td>Unpredictable</td></tr>
+            <tr><td>You own all files &amp; code</td><td class="sjc"><span class="ck">✓ 100%</span></td><td>Sometimes</td><td><span class="ck">✓ Usually</span></td></tr>
+            <tr><td>Revisions included</td><td class="sjc"><span class="ck">✓ Always</span></td><td><span class="cx">Extra cost</span></td><td>Varies</td></tr>
+            <tr><td>Transparent flat pricing</td><td class="sjc"><span class="ck">✓ Always</span></td><td><span class="cx">Hidden fees common</span></td><td>Varies</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-4">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- PRICING -->
+<div class="page" id="page-pricing">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-pricing">← Back</button><div class="phn">05</div><div class="lbl">Investment</div><h1 class="ttl gt">Clear,<br>Honest Pricing</h1></div><p class="sub">No hidden fees. Flat-rate packages so you know exactly what you're paying before we start.</p></div>
+    <div class="ic">
+      <div class="prg">
+        <div class="prc reveal"><div class="ptier">Basic</div><div class="pamt gt"><sup>$</sup>250</div><div class="pnote">One-time · 5-day delivery</div><ul class="pfeats"><li>Single landing page</li><li>Mobile responsive</li><li>Contact form</li><li>Basic SEO setup</li><li>1 revision round</li><li>All files handed over</li></ul><button class="pbtn pb-o" id="p-cta-1">Get Started</button></div>
+        <div class="prc reveal d1"><div class="ptier">Starter</div><div class="pamt gt"><sup>$</sup>499</div><div class="pnote">One-time · 7-day delivery</div><ul class="pfeats"><li>Up to 3 pages</li><li>Custom design</li><li>Mobile responsive</li><li>Contact form + CTA</li><li>SEO setup</li><li>2 revision rounds</li></ul><button class="pbtn pb-o" id="p-cta-2">Get Started</button></div>
+        <div class="prc prf reveal d2"><div class="pfbdg">Most Popular</div><div class="ptier">Professional</div><div class="pamt gt"><sup>$</sup>1,299</div><div class="pnote">One-time · 14-day delivery</div><ul class="pfeats"><li>Up to 8 pages</li><li>Custom design</li><li>CMS integration</li><li>Full SEO optimization</li><li>3 revision rounds</li><li>Analytics setup</li><li>30-day support</li></ul><button class="pbtn pb-f" id="p-cta-3">Get Started</button></div>
+        <div class="prc reveal d3"><div class="ptier">E-Commerce</div><div class="pamt gt"><sup>$</sup>2,499</div><div class="pnote">One-time · 21-day delivery</div><ul class="pfeats"><li>Full online store</li><li>Payment gateway</li><li>Product catalog</li><li>Inventory management</li><li>Unlimited revisions</li><li>30-day support</li></ul><button class="pbtn pb-o" id="p-cta-4">Get Started</button></div>
+      </div>
+      <div class="pguar reveal" style="margin-top:2rem;"><div class="pgi">🛡️</div><div><p><strong>100% Satisfaction Guarantee.</strong> Not happy after your first revision round? We redesign from scratch — no questions asked.</p></div></div>
+      <p style="text-align:center;color:var(--muted);font-size:.82rem;margin-top:1.75rem;">Need something custom? <button class="ftlk" id="custom-quote" style="color:var(--accent);font-size:.82rem;display:inline;">Get a free quote →</button></p>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-5">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- CASE STUDIES -->
+<div class="page" id="page-cases">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-cases">← Back</button><div class="phn">07</div><div class="lbl">Case Studies</div><h1 class="ttl gt">Real Problems.<br>Measurable Results.</h1></div><p class="sub">A deeper look at how we approach problems and the impact on actual business outcomes.</p></div>
+    <div class="ic">
+      <div class="csc reveal">
+        <div class="csh"><div><h3 class="gt">Titan Tax Advisors — Website Build</h3><p>Tax Advisory · Long Island, NY · 2025</p></div></div>
+        <div class="csb">
+          <div class="csc-col"><div class="cclbl">The Problem</div><p>No website at all. Losing potential clients to competitors who appeared in local search results. Zero digital presence.</p></div>
+          <div class="csc-col"><div class="cclbl">Our Solution</div><p>Built a clean, professional website with service pages, a contact form, and local SEO setup so they could be found on Google.</p></div>
+          <div class="csc-col"><div class="cclbl">The Result</div><p>A fully custom website that represents the business professionally and brings in new inquiries through search — where there was nothing before.</p></div>
+        </div>
+      </div>
+      <div class="csc reveal d1" style="opacity:.55;">
+        <div class="csh"><div><h3 class="gt" style="color:var(--muted);">Case Study — Coming Soon</h3><p>Next client project</p></div></div>
+        <div class="csb">
+          <div class="csc-col"><div class="cclbl">The Problem</div><p style="color:var(--muted2);">Details will be added once the project is complete.</p></div>
+          <div class="csc-col"><div class="cclbl">Our Solution</div><p style="color:var(--muted2);">Details will be added once the project is complete.</p></div>
+          <div class="csc-col"><div class="cclbl">Results</div><p style="color:var(--muted2);">Results will be shared after launch.</p></div>
+        </div>
+      </div>
+      <div class="csc reveal d2" style="opacity:.55;">
+        <div class="csh"><div><h3 class="gt" style="color:var(--muted);">Case Study — Coming Soon</h3><p>Next client project</p></div></div>
+        <div class="csb">
+          <div class="csc-col"><div class="cclbl">The Problem</div><p style="color:var(--muted2);">Details will be added once the project is complete.</p></div>
+          <div class="csc-col"><div class="cclbl">Our Solution</div><p style="color:var(--muted2);">Details will be added once the project is complete.</p></div>
+          <div class="csc-col"><div class="cclbl">Results</div><p style="color:var(--muted2);">Results will be shared after launch.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-cs">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- FAQ -->
+<div class="page" id="page-faq">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-faq">← Back</button><div class="phn">09</div><div class="lbl">FAQ</div><h1 class="ttl gt">Questions<br>Answered</h1></div><p class="sub">Everything you need to know before hiring us. Straight answers, no runaround.</p></div>
+    <div class="ic" style="max-width:740px;">
+
+      <!-- WEBSITE TYPES SECTION -->
+      <div style="margin-bottom:2.5rem;">
+        <div class="lbl">Website Types Explained</div>
+        <h2 class="ttl gt" style="font-size:1.6rem;margin-bottom:1.5rem;">Not Sure What You Need?</h2>
+        <p style="color:var(--muted);font-size:.9rem;line-height:1.75;margin-bottom:1.5rem;">Here's a plain-English breakdown of the different types of websites we build and who each one is for.</p>
+
+        <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;">
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;transition:all var(--t);">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(176,159,234,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📱</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">Landing Page</h4>
+                <span style="font-size:.7rem;color:var(--accent);font-weight:600;">From $250 · 5 days</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">A single page with one goal — get visitors to take one specific action, like calling you, booking an appointment, or signing up. No navigation, no distractions. Just a focused page designed to convert. <strong style="color:var(--text);">Best for:</strong> promotions, new businesses getting online fast, ad campaigns, or testing an idea.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(176,159,234,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🏢</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">Business Website</h4>
+                <span style="font-size:.7rem;color:var(--accent);font-weight:600;">From $499 · 1–2 weeks</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">A full website with multiple pages — Home, About, Services, Contact, etc. This is the standard for most small businesses. It tells people who you are, what you do, where you're located, and how to reach you. <strong style="color:var(--text);">Best for:</strong> local businesses, service providers, restaurants, law firms, medical practices, and anyone who wants a professional online presence.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(137,212,192,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🛒</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">E-Commerce Store</h4>
+                <span style="font-size:.7rem;color:var(--accent2);font-weight:600;">From $2,499 · 3 weeks</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">A full online store where customers can browse products, add them to a cart, and check out with a credit card or PayPal. Includes product pages, inventory tracking, and payment processing. <strong style="color:var(--text);">Best for:</strong> retail businesses, boutiques, brands selling physical or digital products online.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(244,167,195,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✍️</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">Website with CMS</h4>
+                <span style="font-size:.7rem;color:#c05a80;font-weight:600;">Included in Pro plan · 2 weeks</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">A CMS (Content Management System) lets you update your own website without touching any code — add blog posts, change photos, update pricing, edit text. Think of it like a simple dashboard for your site. <strong style="color:var(--text);">Best for:</strong> businesses that want to keep their site updated themselves without paying a developer every time.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(176,159,234,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🔄</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">Website Redesign</h4>
+                <span style="font-size:.7rem;color:var(--accent);font-weight:600;">Same pricing as new build</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">Already have a website but it's outdated, slow, or not bringing in business? We rebuild it from scratch with your existing content migrated over. You get a brand new site without starting from zero on your content. <strong style="color:var(--text);">Best for:</strong> businesses with an existing site that just isn't working anymore.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+              <div style="width:38px;height:38px;background:rgba(137,212,192,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🔧</div>
+              <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" class="gt">Maintenance & Support</h4>
+                <span style="font-size:.7rem;color:var(--accent2);font-weight:600;">From $99/month</span>
+              </div>
+            </div>
+            <p style="color:var(--muted);font-size:.84rem;line-height:1.7;">Ongoing care for your website after it launches — security updates, content changes, performance monitoring, and minor tweaks. So your site stays fast, secure, and up to date without you having to think about it. <strong style="color:var(--text);">Best for:</strong> anyone who wants their site maintained without dealing with it themselves.</p>
+          </div>
+
+        </div>
+
+        <div style="background:rgba(176,159,234,.07);border:1px solid rgba(176,159,234,.2);border-radius:var(--r);padding:1.25rem;text-align:center;">
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:.85rem;">Still not sure which type fits your business? Just tell us what you do and we'll recommend the right one.</p>
+          <button class="btn btn-p btn-arr" id="faq-type-cta">Talk to Us Free</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:2.5rem;">
+        <div class="lbl">Common Questions</div>
+        <h2 class="ttl gt" style="font-size:1.6rem;margin-bottom:1.5rem;">Everything Else</h2>
+      </div>
+
+      <div class="fql">
+        <div class="fqi"><button class="fqq">How much does a website cost?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Packages start at $250 for a landing page, $499 for a starter site, $1,299 for a professional multi-page site, and $2,499 for e-commerce. Custom projects quoted after a free call. No hidden fees — what we quote is what you pay.</div></div></div>
+        <div class="fqi"><button class="fqq">How long does it take?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Landing pages in 5 days, starter sites in 7 days, professional sites in 2 weeks, e-commerce in 3 weeks. Timeline depends on how quickly you provide content and feedback — we move fast when you do.</div></div></div>
+        <div class="fqi"><button class="fqq">How many revisions are included?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">1 round for Basic, 2 for Starter, 3 for Professional, unlimited for E-Commerce. A revision round means you give us a full consolidated list and we implement everything at once. We've never left a client unhappy.</div></div></div>
+        <div class="fqi"><button class="fqq">Do I own the website when it's done?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Absolutely — 100%. You own the code, design files, domain, and hosting account. We hand over everything on final payment. No lock-in, no ongoing dependency on us.</div></div></div>
+        <div class="fqi"><button class="fqq">Who handles hosting and the domain?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">You own and pay for your own hosting and domain directly. We recommend Namecheap for domains and Cloudflare or Netlify for hosting. We help set everything up and deploy the site so you're never dependent on us.</div></div></div>
+        <div class="fqi"><button class="fqq">Do you offer maintenance after launch?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Yes — ongoing maintenance from $99/month covering updates, security patches, and minor tweaks. You can also hire us for one-off work without a retainer. Professional and E-Commerce packages include 30 days free post-launch.</div></div></div>
+        <div class="fqi"><button class="fqq">Will my website rank on Google?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Every site includes on-page SEO fundamentals: heading structure, meta tags, image alt text, sitemap, schema markup, and fast load times. We set up Google Search Console and Analytics too. Ranking is long-term — we set the right foundation.</div></div></div>
+        <div class="fqi"><button class="fqq">Can you build an e-commerce store?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Yes — one of our specialties. We build on Shopify, WooCommerce, or custom solutions. Our E-Commerce package includes payment gateway setup (Stripe, PayPal), product catalog, inventory management, and a conversion-optimized checkout.</div></div></div>
+        <div class="fqi"><button class="fqq">Do you offer payment plans?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Yes. Over $500: 50% deposit, 50% on delivery. Over $1,299: 40% at start, 30% after design approval, 30% on launch. Just reach out to discuss.</div></div></div>
+        <div class="fqi"><button class="fqq">Can you redesign my existing website?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Absolutely. Redesigns are some of our most impactful projects. We'll audit your current site, identify what's hurting conversions and SEO, then rebuild with existing content migrated over. Same pricing as a new build.</div></div></div>
+        <div class="fqi"><button class="fqq">Do you write the content for my website?<span class="fqch">▼</span></button><div class="fqa"><div class="fqai">Copywriting is available as an add-on from $200. Good copy is one of the biggest factors in conversion rate — we strongly recommend it if you don't have content ready. We write headlines, service descriptions, about sections, and CTAs.</div></div></div>
+      </div>
+      <div style="margin-top:2.5rem;text-align:center;">
+        <p style="color:var(--muted);margin-bottom:1rem;font-size:.9rem;">Still have questions? We reply within 24 hours.</p>
+        <button class="btn btn-p btn-arr" id="faq-cta">Ask Us Anything</button>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-faq">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="page-about">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-about">← Back</button><div class="phn">10</div><div class="lbl">About Us</div><h1 class="ttl gt">Two Builders,<br>One Mission</h1></div><p class="sub">Two high school students with big ambitions — building real products, real clients, and working toward the next big thing.</p></div>
+    <div class="ic">
+      <div class="astg">
+        <div class="reveal">
+          <div class="lbl">Our Story</div>
+          <h2 class="ttl gt" style="font-size:1.65rem;">Started From a Simple Frustration</h2>
+          <p style="color:var(--muted);line-height:1.9;margin-bottom:.9rem;">We're two high school students with one goal — to build something that actually matters. S&amp;J Digital Co. is our first step toward the startup we're working to create.</p>
+          <p style="color:var(--muted);line-height:1.9;margin-bottom:.9rem;">We started this because we saw businesses overpaying agencies for slow, generic sites with no real support. So we built an alternative — custom work, honest pricing, and people who actually care about your results.</p>
+          <p style="color:var(--muted);line-height:1.9;">Every project we ship brings us closer to the bigger vision. We're just getting started.</p>
+        </div>
+        <div class="reveal d2" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gaccent);"></div>
+          <div style="font-size:3.5rem;margin-bottom:.85rem;">🛠️</div>
+          <p class="gt" style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.4rem;">Built by developers,<br>not salespeople.</p>
+          <p style="color:var(--muted);font-size:.86rem;">When you work with S&amp;J, you talk directly to the people writing your code.</p>
+        </div>
+      </div>
+      <div class="lbl">The Team</div>
+      <h2 class="ttl gt" style="font-size:1.65rem;margin-bottom:2rem;">Meet Sam &amp; Jackson</h2>
+      <div class="atmg">
+        <div class="tcard reveal">
+          <div class="tav2" style="background:rgba(176,159,234,.18);">👤</div>
+          <h3 class="gt">Sam — Co-Founder</h3>
+          <p style="color:var(--accent);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Design &amp; Development</p>
+          <p>Leads all web design and development. Has completed 10+ projects across multiple industries and built 1 published iOS app.</p>
+        </div>
+        <div class="tcard reveal d1">
+          <div class="tav2" style="background:rgba(137,212,192,.18);">👤</div>
+          <h3 class="gt">Jackson — Co-Founder</h3>
+          <p style="color:var(--accent2);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Strategy &amp; Social Media</p>
+          <p>Handles client strategy, project management, and runs all social media accounts. Makes sure every project is delivered on time and every client is taken care of.</p>
+        </div>
+      </div>
+      <div class="lbl">Values</div>
+      <h2 class="ttl gt" style="font-size:1.65rem;margin-bottom:1.75rem;">What We Believe In</h2>
+      <div class="avg reveal">
+        <div class="vcard"><div class="vcico">✨</div><h4 class="gt">Quality Over Quantity</h4><p>Fewer projects so every client gets our full attention.</p></div>
+        <div class="vcard"><div class="vcico">🤝</div><h4 class="gt">Radical Transparency</h4><p>Clear timelines, honest pricing. No agency jargon.</p></div>
+        <div class="vcard"><div class="vcico">🚀</div><h4 class="gt">Long-Term Thinking</h4><p>We build sites that last and grow with your business.</p></div>
+      </div>
+      <div style="text-align:center;margin-top:2rem;"><button class="btn btn-p btn-lg btn-arr" id="about-cta">Work With Us</button></div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-7">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="page-contact">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-contact">← Back</button><div class="phn">11</div><div class="lbl">Let's Talk</div><h1 class="ttl gt">Start Your<br>Project Today</h1></div><p class="sub">Tell us about your goals. We'll respond within 24 hours with a personalized plan and quote.</p></div>
+    <div class="ic">
+      <div style="display:flex;align-items:center;gap:.65rem;background:rgba(137,212,192,.07);border:1px solid rgba(137,212,192,.22);border-radius:var(--r);padding:.85rem 1.1rem;margin-bottom:2.25rem;font-size:.81rem;color:#3d9d82;">🟢 <strong>Currently accepting new projects</strong> — response time under 24 hours.</div>
+      <div class="cw">
+        <div>
+          <div class="cinf reveal">
+            <div class="cit"><div class="cicw">📧</div><div><h5 class="gt">Email</h5><p>hello@sjdigital.com</p></div></div>
+            <div class="cit"><div class="cicw">📞</div><div><h5 class="gt">Phone</h5><p><a href="tel:5169131299" style="color:var(--muted);text-decoration:none;">(516) 913-1299</a></p></div></div>
+            <div class="cit"><div class="cicw">📍</div><div><h5 class="gt">Location</h5><p>Long Island, New York</p></div></div>
+            <div class="cit"><div class="cicw">⏱</div><div><h5 class="gt">Response Time</h5><p>Within 24 hours, guaranteed</p></div></div>
+            <div class="cit"><div class="cicw">🌐</div><div><h5 class="gt">Service Area</h5><p>Long Island & nationwide remote</p></div></div>
+            <div class="cit"><div class="cicw">💰</div><div><h5 class="gt">Starting At</h5><p>$250 for a landing page</p></div></div>
+          </div>
+          <div class="bcrd" style="margin-top:1.25rem;">
+            <h5 class="gt" style="font-family:'Syne',sans-serif;font-weight:700;">📅 Schedule a Free Call</h5>
+            <p>Available after 3pm — pick a slot that works for you.</p>
+            <div class="bslts"><button class="slbtn">Mon 3pm</button><button class="slbtn">Mon 4pm</button><button class="slbtn">Tue 3pm</button><button class="slbtn">Wed 4pm</button><button class="slbtn">Thu 3pm</button><button class="slbtn">Fri 4pm</button><button class="slbtn">Fri 5pm</button></div>
+          </div>
+        </div>
+        <div class="cf reveal d1">
+          <div class="fldmsg">🎁 <span>Fill out and get a <strong>free website audit</strong> — we'll identify what's costing you leads.</span></div>
+          <form id="contact-form" action="https://formspree.io/f/gonzalezsamf@gmail.com" method="POST">
+            <div class="fg" style="margin-bottom:.9rem;">
+              <div class="fgrp"><label>First Name</label><input type="text" name="first_name" id="fname" placeholder="John" required></div>
+              <div class="fgrp"><label>Last Name</label><input type="text" name="last_name" id="lname" placeholder="Smith"></div>
+            </div>
+            <div class="fgrp" style="margin-bottom:.9rem;"><label>Email</label><input type="email" name="email" id="email" placeholder="john@company.com" required></div>
+            <div class="fgrp" style="margin-bottom:.9rem;"><label>Business Type</label>
+              <div class="selg"><button type="button" class="seb" data-g="biz">Retail / E-Commerce</button><button type="button" class="seb" data-g="biz">Service Business</button><button type="button" class="seb" data-g="biz">Restaurant</button><button type="button" class="seb" data-g="biz">Real Estate</button><button type="button" class="seb" data-g="biz">Healthcare</button><button type="button" class="seb" data-g="biz">Other</button></div>
+              <input type="hidden" name="business_type" id="biz-hidden">
+            </div>
+            <div class="fgrp" style="margin-bottom:.9rem;"><label>Budget</label>
+              <div class="selg"><button type="button" class="seb" data-g="budget">$250–$500</button><button type="button" class="seb" data-g="budget">$500–$1,500</button><button type="button" class="seb" data-g="budget">$1,500–$3,000</button><button type="button" class="seb" data-g="budget">$3,000+</button></div>
+              <input type="hidden" name="budget" id="budget-hidden">
+            </div>
+            <div class="fgrp" style="margin-bottom:.9rem;"><label>Timeline</label>
+              <div class="selg"><button type="button" class="seb" data-g="tl">ASAP</button><button type="button" class="seb" data-g="tl">2–4 weeks</button><button type="button" class="seb" data-g="tl">1–2 months</button><button type="button" class="seb" data-g="tl">No rush</button></div>
+              <input type="hidden" name="timeline" id="tl-hidden">
+            </div>
+            <div class="fgrp" style="margin-bottom:.9rem;"><label>Tell Us About Your Project</label><textarea name="message" id="message" rows="4" placeholder="What are you building? What's your biggest challenge right now?" required></textarea></div>
+            <input type="hidden" name="_subject" value="New project inquiry — S&J Web">
+            <input type="text" name="_gotcha" style="display:none">
+            <button type="submit" class="fsub" id="form-submit-btn">Send Message →</button>
+          </form>
+          <div class="fmsg" id="formMsg">✓ Sent! We'll be in touch within 24 hours with your free audit.</div>
+          <p style="font-size:.7rem;color:var(--muted2);margin-top:.4rem;">🔒 Your info is safe. We never share your data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-6">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- BLOG PAGE -->
+<div class="page" id="page-blog">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-blog">← Back</button><div class="phn">12</div><div class="lbl">Resources</div><h1 class="ttl gt">Tips &amp; Insights<br>for Business Owners</h1></div><p class="sub">Free guides to help you get more customers online — whether you work with us or not.</p></div>
+    <div class="ic">
+      <div class="blg">
+        <div class="bpost reveal" data-article="art-pricing">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#e8e3f8,#d4f0ea);">💰</div>
+          <div class="bpost-body"><div class="bpost-tag">Pricing</div><h3 class="gt">How Much Should a Small Business Website Cost? (Honest Breakdown)</h3><p>The real answer to the question every business owner asks — and why most agencies don't want to tell you.</p><div class="bpost-meta">5 min read · S&amp;J Digital Co.</div></div>
+        </div>
+        <div class="bpost reveal d1" data-article="art-restaurant">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#f0eefc,#fce8f0);">📈</div>
+          <div class="bpost-body"><div class="bpost-tag">SEO</div><h3 class="gt">5 Reasons Your Restaurant Needs a Website in 2026</h3><p>Still relying on Instagram and word of mouth? Here's what you're leaving on the table without a proper site.</p><div class="bpost-meta">4 min read · S&amp;J Digital Co.</div></div>
+        </div>
+        <div class="bpost reveal d2" data-article="art-convert">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#e8f8f4,#e3f0fc);">⚡</div>
+          <div class="bpost-body"><div class="bpost-tag">Performance</div><h3 class="gt">What Makes a Website Actually Convert Visitors Into Customers?</h3><p>Most websites look fine but convert terribly. Here are the 6 things that actually move the needle.</p><div class="bpost-meta">6 min read · S&amp;J Digital Co.</div></div>
+        </div>
+        <div class="bpost reveal" data-article="art-seo">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#fce8f0,#e8e3f8);">🔍</div>
+          <div class="bpost-body"><div class="bpost-tag">SEO</div><h3 class="gt">How to Get Your Business to Show Up on Google (Without Paying for Ads)</h3><p>A plain-English guide to local SEO for small business owners on Long Island and beyond.</p><div class="bpost-meta">7 min read · S&amp;J Digital Co.</div></div>
+        </div>
+        <div class="bpost reveal d1" data-article="art-shopify">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#d4f0ea,#f0eefc);">🛒</div>
+          <div class="bpost-body"><div class="bpost-tag">E-Commerce</div><h3 class="gt">Shopify vs. Custom Website: Which One Is Right for Your Store?</h3><p>We've built both. Here's the honest breakdown so you can make the right call for your business.</p><div class="bpost-meta">5 min read · S&amp;J Digital Co.</div></div>
+        </div>
+        <div class="bpost reveal d2" data-article="art-mobile">
+          <div class="bpost-img" style="background:linear-gradient(135deg,#e8f8f4,#fce8f0);">📱</div>
+          <div class="bpost-body"><div class="bpost-tag">Design</div><h3 class="gt">Why Your Website Looks Fine on Desktop But Loses You Customers on Mobile</h3><p>Over 60% of web traffic is mobile. Here's what to check and how to fix it.</p><div class="bpost-meta">4 min read · S&amp;J Digital Co.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-blog">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- ARTICLE 1: PRICING -->
+<div class="page" id="page-art-pricing">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-pricing">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">Pricing</div>
+          <h1 class="art-title gt">How Much Should a Small Business Website Cost? (Honest Breakdown)</h1>
+          <div class="art-meta"><span>5 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>If you've ever Googled "how much does a website cost," you've probably gotten answers ranging from $500 to $50,000. That range is so wide it's basically useless. So let's break it down honestly — what you actually need, what things actually cost, and where you can save vs. where you really shouldn't.</p>
+
+          <h2>The Short Answer</h2>
+          <p>For a small business website in 2026, you should expect to pay somewhere between <strong>$250 and $5,000</strong> depending on what you need. Here's why that range exists:</p>
+          <ul>
+            <li><strong>$250–$500</strong> — A single landing page or simple 1–3 page site. Good for getting online fast with something professional.</li>
+            <li><strong>$500–$1,500</strong> — A real business website with 4–8 pages, custom design, SEO setup, and a contact form. This is where most small businesses should be.</li>
+            <li><strong>$1,500–$5,000</strong> — A more complex site with CMS, booking system, e-commerce, or custom functionality.</li>
+            <li><strong>$5,000+</strong> — Enterprise-level builds, complex custom apps, or large agencies charging for overhead you don't need.</li>
+          </ul>
+
+          <h2>Why Do Agencies Charge So Much?</h2>
+          <p>A big agency might quote you $10,000–$30,000 for a website that a skilled developer could build for $1,500. Where does the rest go? Account managers. Project coordinators. Sales reps. Office space. None of that makes your website better — it just pays for their operation.</p>
+          <div class="art-callout">When you hire a small team or independent developer, you're paying for the actual work — not for someone to relay messages between you and the person doing the work.</div>
+
+          <h2>What You Actually Need (And What You Don't)</h2>
+          <h3>You probably need:</h3>
+          <ul>
+            <li>A clean, fast, mobile-friendly design</li>
+            <li>Clear service or product pages</li>
+            <li>A contact form or booking option</li>
+            <li>Basic SEO setup (meta tags, sitemap, Google Search Console)</li>
+            <li>Analytics so you can see who's visiting</li>
+          </ul>
+          <h3>You probably don't need (yet):</h3>
+          <ul>
+            <li>A custom CMS if you rarely update your site</li>
+            <li>A $500/month hosting plan (a $20/year plan works fine for most small businesses)</li>
+            <li>A full e-commerce build if you only sell a few products</li>
+            <li>A logo redesign bundled into your web package</li>
+          </ul>
+
+          <h2>Template vs. Custom — Does It Matter?</h2>
+          <p>Templates (like Squarespace or Wix) can look decent and cost less upfront. But they come with real tradeoffs: slower load times, limited SEO control, monthly fees that add up, and a site that looks like everyone else's. A custom-built site loads faster, ranks better on Google, and is actually yours — no monthly platform fee, no lock-in.</p>
+          <p>For most small businesses, a custom-built site pays for itself within a few months if it's done right.</p>
+
+          <h2>The Real Question: What's a Customer Worth to You?</h2>
+          <p>If one new customer from your website is worth $200 to your business, and a proper site brings in 5 new customers a month — that's $1,000/month in new revenue. A $1,000 website pays for itself in the first month. That's the right way to think about this investment.</p>
+          <div class="art-callout">A bad website that costs $200 is more expensive than a good website that costs $1,500. One of them actually makes you money.</div>
+
+          <h2>Bottom Line</h2>
+          <p>Don't underspend on something that represents your business 24/7. But also don't overpay for agency overhead that doesn't benefit you. For most small businesses on Long Island and beyond, a budget of $500–$1,500 for a custom-built site is the sweet spot.</p>
+
+          <div class="art-cta-box">
+            <h3 class="gt">Want to know exactly what your site would cost?</h3>
+            <p>We'll give you a straight answer within 24 hours — no fluff, no sales pitch.</p>
+            <button class="btn btn-p btn-arr" id="art1-cta">Get a Free Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art1">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- ARTICLE 2: RESTAURANT -->
+<div class="page" id="page-art-restaurant">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-restaurant">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">SEO</div>
+          <h1 class="art-title gt">5 Reasons Your Restaurant Needs a Website in 2026</h1>
+          <div class="art-meta"><span>4 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>A lot of restaurant owners we talk to say the same thing: "We have Instagram and Google Maps, that's enough." And we get it — you're busy running a restaurant, not thinking about web design. But here's the truth: without a proper website, you're leaving a steady stream of new customers on the table every single day.</p>
+
+          <h2>1. Google Won't Rank You Without It</h2>
+          <p>When someone searches "best pizza Long Island" or "breakfast spots near me," Google's algorithm heavily favors businesses with real websites. A Google Business Profile alone gets you in the map pack — but a proper website with the right keywords gets you into the organic results, which is more traffic and more credibility.</p>
+          <div class="art-callout">Restaurants with websites appear in 3–5× more Google searches than those without one. That's customers choosing your competitor before they ever find you.</div>
+
+          <h2>2. Instagram Is Rented Land</h2>
+          <p>Your Instagram following is great — but you don't own it. One algorithm change, one account issue, one platform shift and that audience is gone. Your website is yours. It's the one place online you fully control, and it's working for you 24/7 even when you're not posting.</p>
+
+          <h2>3. People Want to See Your Menu Before They Visit</h2>
+          <p>This is the number one thing people do before choosing a restaurant — they look up the menu. If they can't find it easily, or if it's buried in a PDF on Facebook from two years ago, they'll just pick somewhere else. A clean, updated menu page on your website removes that friction completely.</p>
+
+          <h2>4. Online Ordering and Reservations = More Revenue</h2>
+          <p>Even a simple "Order Online" or "Make a Reservation" button on your site can meaningfully increase your revenue. You can connect it to Toast, OpenTable, Resy, or even a simple Google Form. The easier you make it for people to commit, the more they will.</p>
+
+          <h2>5. It Makes You Look More Legitimate</h2>
+          <p>This one sounds simple but it's real. A well-designed website signals that you're serious about your business. It builds trust before someone even walks through the door. For newer restaurants especially, a professional online presence can be the thing that gets a hesitant customer to give you a shot.</p>
+
+          <h2>What Should a Restaurant Website Include?</h2>
+          <ul>
+            <li>Your full menu (updated — not a photo of a printed menu)</li>
+            <li>Location, hours, and phone number prominently displayed</li>
+            <li>Online ordering or reservation link</li>
+            <li>A few good photos of the food and atmosphere</li>
+            <li>A link to your Google reviews</li>
+          </ul>
+          <p>That's it. You don't need anything fancy — you just need those basics done well.</p>
+
+          <div class="art-cta-box">
+            <h3 class="gt">We build restaurant websites starting at $499.</h3>
+            <p>Clean, fast, mobile-friendly, and live in under 2 weeks.</p>
+            <button class="btn btn-p btn-arr" id="art2-cta">Get a Free Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art2">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- ARTICLE 3: CONVERSION -->
+<div class="page" id="page-art-convert">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-convert">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">Performance</div>
+          <h1 class="art-title gt">What Makes a Website Actually Convert Visitors Into Customers?</h1>
+          <div class="art-meta"><span>6 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>Most business owners think having a website is enough. It's not. The difference between a website that brings in customers and one that doesn't comes down to a handful of specific things — and none of them are about how "pretty" the design is.</p>
+          <p>Here are the 6 things that actually move the needle when it comes to converting website visitors into paying customers.</p>
+
+          <h2>1. A Clear Headline That Says What You Do</h2>
+          <p>Within 3 seconds of landing on your site, a visitor needs to know: what do you do, who is it for, and why should they care? Most small business websites fail this test. They lead with the company name and a vague tagline. Lead with a benefit instead.</p>
+          <div class="art-callout">"Welcome to Smith Plumbing" → Bad. "Fast, Reliable Plumbing for Long Island Homeowners — Available 24/7" → Good.</div>
+
+          <h2>2. One Primary Call to Action</h2>
+          <p>Every page on your site should have one clear next step you want visitors to take. Call now. Book a consultation. Get a quote. Order online. When you give people too many options, they pick none. Pick one primary CTA and make it impossible to miss.</p>
+
+          <h2>3. Fast Load Time</h2>
+          <p>If your site takes more than 3 seconds to load, you're losing roughly half your visitors before they see a single word. Google also uses page speed as a ranking factor, so a slow site hurts you twice — fewer visitors, and fewer of those visitors stay. Every site we build loads in under 2 seconds.</p>
+
+          <h2>4. Mobile-First Design</h2>
+          <p>Over 60% of website traffic is on mobile devices. If your site isn't built with mobile as the primary experience, you're actively pushing away the majority of your visitors. This means large text, easy-to-tap buttons, and no horizontal scrolling.</p>
+
+          <h2>5. Social Proof</h2>
+          <p>People trust other people more than they trust businesses. Reviews, testimonials, client logos, and before/after results all reduce the risk a potential customer feels when deciding whether to contact you. Even 2–3 real testimonials can meaningfully increase your conversion rate.</p>
+
+          <h2>6. Friction-Free Contact</h2>
+          <p>How many clicks does it take to contact you from your homepage? The answer should be one. A contact form visible above the fold, a click-to-call phone number, and a simple email link. Every extra step you make someone take before they can reach you is a chance to lose them.</p>
+
+          <h2>The Uncomfortable Truth</h2>
+          <p>Most websites are built to look good in a portfolio, not to generate business. A good-looking site that confuses visitors and loads slowly is just an expensive brochure. The best websites are designed backwards — starting from "what do we want visitors to do?" and building everything around that answer.</p>
+
+          <div class="art-cta-box">
+            <h3 class="gt">Want us to audit your current website for free?</h3>
+            <p>We'll tell you exactly what's costing you customers and how to fix it.</p>
+            <button class="btn btn-p btn-arr" id="art3-cta">Get a Free Audit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art3">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- ARTICLE 4: SEO -->
+<div class="page" id="page-art-seo">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-seo">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">SEO</div>
+          <h1 class="art-title gt">How to Get Your Business to Show Up on Google (Without Paying for Ads)</h1>
+          <div class="art-meta"><span>7 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>Every business owner wants to show up on the first page of Google. Most think the only way to do it is to pay for ads. That's not true. Organic search — showing up for free in Google results — is absolutely achievable for small businesses, especially local ones. Here's exactly how it works and what you can do starting today.</p>
+
+          <h2>Step 1: Set Up Google Business Profile (If You Haven't)</h2>
+          <p>This is the single most impactful free thing you can do. Go to business.google.com, claim your business, fill out every field completely, add photos, and make sure your address, hours, and phone number are accurate. This is what gets you into the "map pack" — those three business listings that appear before organic results.</p>
+          <div class="art-callout">A complete Google Business Profile with photos and reviews can get you more local traffic than almost anything else — and it's completely free.</div>
+
+          <h2>Step 2: Get Your Website's On-Page SEO Right</h2>
+          <p>On-page SEO means optimizing the actual content and code of your website so Google understands what you do and where you are. The basics:</p>
+          <ul>
+            <li><strong>Title tags</strong> — Each page should have a unique title like "Tax Preparation Services | Long Island, NY | Titan Tax Advisors"</li>
+            <li><strong>Meta descriptions</strong> — A 1–2 sentence summary of each page that shows up in search results</li>
+            <li><strong>Heading structure</strong> — Use H1 for your main headline, H2 for sections</li>
+            <li><strong>Location keywords</strong> — Naturally include your city and service area in your content</li>
+            <li><strong>Image alt text</strong> — Describe your images so Google can read them</li>
+          </ul>
+
+          <h2>Step 3: Create Content That Answers Real Questions</h2>
+          <p>Google rewards websites that genuinely help people. Think about the questions your customers ask you all the time — "how much does X cost?", "how long does Y take?", "what's the difference between A and B?" — and write pages or blog posts that answer those questions thoroughly. This is how you start showing up for searches your competitors aren't targeting.</p>
+
+          <h2>Step 4: Get Local Citations</h2>
+          <p>A "citation" is any mention of your business name, address, and phone number on another website. Yelp, Yellow Pages, Angi, the Better Business Bureau, local Chamber of Commerce sites — all of these tell Google your business is real and legitimate. Make sure your information is consistent across all of them.</p>
+
+          <h2>Step 5: Get Google Reviews</h2>
+          <p>Reviews are one of the biggest local ranking factors. After you complete a job or service, simply ask your customer if they'd be willing to leave a Google review. Most happy customers will say yes — they just need to be asked. Even 10–15 genuine reviews can significantly boost your local ranking.</p>
+
+          <h2>How Long Does It Take?</h2>
+          <p>SEO is a long-term strategy, not an overnight fix. Most businesses start seeing meaningful movement in 3–6 months with consistent effort. But the results compound over time — traffic you earn organically keeps coming in month after month without paying for it.</p>
+          <p>Paid ads stop the moment you stop paying. Organic rankings, once you earn them, are much harder to lose.</p>
+
+          <div class="art-cta-box">
+            <h3 class="gt">Every website we build includes SEO setup from day one.</h3>
+            <p>We handle the technical foundation so you start ranking from launch day.</p>
+            <button class="btn btn-p btn-arr" id="art4-cta">Get a Free Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art4">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- ARTICLE 5: SHOPIFY -->
+<div class="page" id="page-art-shopify">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-shopify">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">E-Commerce</div>
+          <h1 class="art-title gt">Shopify vs. Custom Website: Which One Is Right for Your Store?</h1>
+          <div class="art-meta"><span>5 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>If you're starting an online store or thinking about moving your business online, this is one of the first decisions you'll face: do you go with Shopify, or do you build a custom website? We've built both. Here's the honest breakdown.</p>
+
+          <h2>What Is Shopify?</h2>
+          <p>Shopify is a platform that lets you build an online store without coding. It handles payments, inventory, shipping calculations, and a lot of the technical stuff automatically. You pay a monthly fee (starting at $39/month) and use their templates to build your store.</p>
+
+          <h2>What Is a Custom Website?</h2>
+          <p>A custom website is built from scratch, coded specifically for your business. You own the code, you host it yourself, and there's no monthly platform fee. It can do anything you need it to do — but it requires a developer to build and maintain it.</p>
+
+          <h2>When Shopify Makes Sense</h2>
+          <ul>
+            <li>You're selling physical products and need inventory management out of the box</li>
+            <li>You want to get online quickly without a large upfront cost</li>
+            <li>You need built-in shipping integrations (FedEx, UPS, USPS)</li>
+            <li>You plan to manage the site yourself without a developer</li>
+            <li>You're doing high-volume sales and need proven infrastructure</li>
+          </ul>
+
+          <h2>When a Custom Website Makes Sense</h2>
+          <ul>
+            <li>You want full control over design without template limitations</li>
+            <li>You don't want to pay a monthly platform fee forever</li>
+            <li>You need custom functionality Shopify can't do out of the box</li>
+            <li>You're selling services, not just physical products</li>
+            <li>SEO is a priority — custom sites generally rank better</li>
+          </ul>
+
+          <h2>The Cost Comparison</h2>
+          <p><strong>Shopify:</strong> $39–$399/month platform fee, plus transaction fees, plus theme cost ($200–$400 one-time), plus app costs. Over 3 years that's easily $2,000–$5,000+ even before any developer work.</p>
+          <p><strong>Custom site:</strong> One-time development cost ($2,499 with us), plus hosting (~$10–20/year). Over 3 years, you're paying a fraction of what Shopify costs.</p>
+          <div class="art-callout">For most small e-commerce businesses, a custom site is cheaper over time and gives you more control. Shopify wins on speed to launch and built-in features.</div>
+
+          <h2>Our Honest Recommendation</h2>
+          <p>If you're brand new to e-commerce and want to test the waters fast, Shopify is fine. If you're serious about building a long-term online business and want something that's fully yours, a custom build is the better investment. We build both — the right answer depends on your specific situation.</p>
+
+          <div class="art-cta-box">
+            <h3 class="gt">Not sure which is right for you?</h3>
+            <p>Tell us about your business and we'll give you a straight recommendation — no upsell.</p>
+            <button class="btn btn-p btn-arr" id="art5-cta">Talk to Us Free</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art5">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- ARTICLE 6: MOBILE -->
+<div class="page" id="page-art-mobile">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-art-mobile">← Back to Blog</button><div class="phn">📝</div></div></div>
+    <div class="ic">
+      <div class="art-wrap">
+        <div class="art-hero">
+          <div class="art-tag">Design</div>
+          <h1 class="art-title gt">Why Your Website Looks Fine on Desktop But Loses You Customers on Mobile</h1>
+          <div class="art-meta"><span>4 min read</span><span>·</span><span>S&amp;J Digital Co.</span><span>·</span><span>Long Island, NY</span></div>
+        </div>
+        <div class="art-body">
+          <p>Pull up your website on your phone right now. Seriously — do it. If you're like most small business owners, what you'll find is a shrunken version of your desktop site that's hard to read, has tiny buttons, and requires zooming in to find anything. That experience is costing you real customers every day.</p>
+
+          <h2>The Numbers You Need to Know</h2>
+          <p>More than 60% of all web traffic comes from mobile devices. For local businesses — restaurants, service companies, retailers — that number is often over 70%. Google also uses mobile-first indexing, which means it ranks your site based on how good the mobile experience is, not the desktop one. A bad mobile site doesn't just lose visitors. It lowers your Google ranking too.</p>
+
+          <h2>What "Mobile Responsive" Actually Means</h2>
+          <p>You've probably heard the term "mobile responsive." It just means the site adjusts its layout based on screen size. But responsive doesn't automatically mean good. A site can be technically responsive and still be a nightmare to use on a phone. True mobile-first design means building the mobile experience first and working up from there.</p>
+
+          <h2>The 5 Most Common Mobile Problems</h2>
+          <h3>1. Text that's too small to read</h3>
+          <p>Body text should be at least 16px on mobile. Anything smaller and users start pinching to zoom — and most of them just leave instead.</p>
+          <h3>2. Buttons that are too small to tap</h3>
+          <p>A mouse can click a tiny button. A finger can't. Tap targets should be at least 44×44px. Your "Call Now" button should be impossible to miss.</p>
+          <h3>3. Navigation that doesn't work on mobile</h3>
+          <p>A full horizontal nav bar from your desktop site doesn't translate to mobile. You need a clean hamburger menu or simplified navigation that works with a thumb.</p>
+          <h3>4. Images that are too wide</h3>
+          <p>Oversized images cause horizontal scrolling and slow load times on mobile — two things that instantly kill engagement.</p>
+          <h3>5. Forms that are hard to fill out</h3>
+          <p>If your contact form has 10 fields and tiny input boxes, nobody on a phone is filling it out. Keep mobile forms to the essentials: name, phone/email, message.</p>
+
+          <h2>How to Check Your Mobile Experience</h2>
+          <p>The fastest way: pull up your site on your actual phone and try to use it as a new visitor would. Try to find your phone number, fill out your contact form, and navigate to your main service page. If anything frustrated you — it's frustrating your customers too.</p>
+          <p>You can also use Google's free tool at search.google.com/test/mobile-friendly to get an official assessment.</p>
+
+          <h2>The Fix</h2>
+          <p>If your site has significant mobile problems, a redesign is usually the most cost-effective solution. Trying to patch a desktop-first site into mobile friendliness is like trying to turn a sedan into a truck — possible, but messier and more expensive than just getting the right vehicle from the start.</p>
+          <div class="art-callout">Every site we build is designed mobile-first. The phone experience is built first, then scaled up — not the other way around.</div>
+
+          <div class="art-cta-box">
+            <h3 class="gt">Want us to audit your mobile experience for free?</h3>
+            <p>We'll tell you exactly what's broken and what it would take to fix it.</p>
+            <button class="btn btn-p btn-arr" id="art6-cta">Get a Free Audit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-art6">← Home</button><p>© 2026 S&amp;J Digital Co.</p></div></footer>
+</div>
+
+<!-- REFERRAL PAGE -->
+<div class="page" id="page-referral">
+  <div class="ip">
+    <div class="ph"><div><button class="back" id="back-referral">← Back</button><div class="phn">13</div><div class="lbl">Referral Program</div><h1 class="ttl gt">Know Someone Who<br>Needs a Website?</h1></div><p class="sub">Send them our way and we'll send you $50 cash when they become a client. Simple as that.</p></div>
+    <div class="ic">
+      <div class="ref-wrap">
+        <div class="reveal">
+          <div class="lbl">How It Works</div>
+          <h2 class="ttl gt" style="font-size:1.65rem;">Three Steps, $50 in Your Pocket</h2>
+          <div class="ref-steps">
+            <div class="ref-step"><div class="ref-num">1</div><div><h4 class="gt">Tell someone about us</h4><p>Know a business owner who needs a website? Tell them about S&amp;J Digital Co. or send them our link.</p></div></div>
+            <div class="ref-step"><div class="ref-num">2</div><div><h4 class="gt">They become a client</h4><p>When they contact us, they mention your name. We build their site and they're happy with the result.</p></div></div>
+            <div class="ref-step"><div class="ref-num">3</div><div><h4 class="gt">You get $50</h4><p>We send you $50 cash via Venmo, Zelle, or PayPal — no minimum, no limits, no expiry.</p></div></div>
+          </div>
+          <button class="btn btn-p btn-arr" id="ref-cta" style="margin-top:2rem;">Refer Someone Now</button>
+        </div>
+        <div class="ref-card reveal d2">
+          <div class="ref-amount gt">$50</div>
+          <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.4rem;">Per Referral</p>
+          <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.5rem;">Paid out when your referral's project is complete. No cap — refer as many as you want.</p>
+          <div style="display:flex;flex-direction:column;gap:.65rem;text-align:left;">
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;"><span style="color:var(--accent2);font-weight:700;">✓</span> No limit on referrals</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;"><span style="color:var(--accent2);font-weight:700;">✓</span> Paid via Venmo, Zelle, or PayPal</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;"><span style="color:var(--accent2);font-weight:700;">✓</span> Applies to any package ($250+)</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;"><span style="color:var(--accent2);font-weight:700;">✓</span> No expiry — refer anytime</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="ft"><div class="ftbt sftbt"><button class="ftlk" id="fh-ref">← Home</button><p>© 2026 S&amp;J Digital Co.</p><div class="ftlg"><a href="#">Privacy</a></div></div></footer>
+</div>
+
+<!-- PROJECT PREVIEW MODAL -->
+<div class="pmodal" id="project-modal">
+  <div class="pmodal-inner">
+    <div class="pmodal-bar">
+      <span class="pmodal-title gt">Titan Tax Advisors — Live Preview</span>
+      <button class="pmodal-close" id="modal-close">✕</button>
+    </div>
+    <iframe id="modal-iframe" src="" title="Titan Tax Advisors Preview"></iframe>
+  </div>
+</div>
+
+<!-- Tawk.to Live Chat -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{},Tawk_LoadStart=new Date();
+(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;s1.src='https://embed.tawk.to/default/default';
+s1.charset='UTF-8';s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);})();
+</script>
+
+<script>
+(function(){
+var R={
+  'nav-home':'home','nav-services':'services','nav-portfolio':'portfolio',
+  'nav-pricing':'pricing','nav-about':'about','nav-contact':'contact',
+  'mc-services':'services','mc-portfolio':'portfolio','mc-process':'process',
+  'mc-pricing':'pricing','mc-about':'about','mc-contact':'contact',
+  'hero-cta-primary':'contact','hero-cta-portfolio':'portfolio',
+  'floating-cta-btn':'contact',
+  'back-services':'home','back-portfolio':'home','back-process':'home',
+  'back-why':'home','back-pricing':'home','back-about':'home',
+  'back-contact':'home','back-cases':'home','back-faq':'home',
+  'srv-cta':'contact','proc-cta':'contact','why-cta':'contact',
+  'about-cta':'contact','faq-cta':'contact',
+  'p-cta-1':'contact','p-cta-2':'contact','p-cta-3':'contact','p-cta-4':'contact',
+  'custom-quote':'contact',
+  'fl-s1':'services','fl-s2':'services','fl-s3':'services',
+  'fl-s4':'services','fl-s5':'services','fl-s6':'services',
+  'fl-about':'about','fl-portfolio':'portfolio','fl-process':'process',
+  'fl-faq':'faq','fl-contact':'contact',
+  'fl-blog':'blog','fl-referral':'referral',
+  'fh-2':'home','fh-p':'home','fh-3':'home','fh-4':'home','fh-5':'home',
+  'fh-6':'home','fh-7':'home','fh-cs':'home','fh-faq':'home',
+  'back-blog':'home','back-referral':'home',
+  'fh-blog':'home','fh-ref':'home',
+  'blog-cta':'contact','ref-cta':'contact','faq-type-cta':'contact',
+  'back-art-pricing':'blog','back-art-restaurant':'blog','back-art-convert':'blog',
+  'back-art-seo':'blog','back-art-shopify':'blog','back-art-mobile':'blog',
+  'art1-cta':'contact','art2-cta':'contact','art3-cta':'contact',
+  'art4-cta':'contact','art5-cta':'contact','art6-cta':'contact',
+  'fh-art1':'home','fh-art2':'home','fh-art3':'home',
+  'fh-art4':'home','fh-art5':'home','fh-art6':'home',
+  'mn-home':'home','mn-services':'services','mn-portfolio':'portfolio',
+  'mn-process':'process','mn-pricing':'pricing','mn-about':'about','mn-contact':'contact'
+};
+
+function closeMobNav(){
+  document.getElementById('mob-nav').classList.remove('open');
+  document.getElementById('hbg-btn').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function goTo(n){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');p.style.animation='none';});
+  var t=document.getElementById('page-'+n);
+  if(!t)return;
+  t.style.animation='none';t.classList.add('active');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){t.style.animation='';});});
+  window.scrollTo({top:0,behavior:'instant'});
+  document.querySelectorAll('.nl button').forEach(function(b){b.classList.remove('al');});
+  var nb=document.getElementById('nav-'+n);if(nb)nb.classList.add('al');
+  closeMobNav();
+  setTimeout(rev,60);
+}
+Object.keys(R).forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('click',function(){goTo(R[id]);});});
+
+/* HAMBURGER */
+document.getElementById('hbg-btn').addEventListener('click',function(){
+  this.classList.toggle('open');
+  document.getElementById('mob-nav').classList.toggle('open');
+  document.body.style.overflow=this.classList.contains('open')?'hidden':'';
+});
+
+function rev(){
+  var items=document.querySelectorAll('.page.active .reveal:not(.vis)');
+  if(!items.length)return;
+  var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('vis');io.unobserve(x.target);}});},{threshold:0.07});
+  items.forEach(function(i){io.observe(i);});
+}
+rev();
+
+window.addEventListener('scroll',function(){document.getElementById('mnav').classList.toggle('sc',scrollY>40);},{passive:true});
+
+document.querySelectorAll('.fqq').forEach(function(b){b.addEventListener('click',function(){var i=this.parentElement,o=i.classList.contains('op');document.querySelectorAll('.fqi.op').forEach(function(x){x.classList.remove('op');});if(!o)i.classList.add('op');});});
+
+document.querySelectorAll('.fb').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.fb').forEach(function(x){x.classList.remove('fa');});this.classList.add('fa');var f=this.dataset.filter;document.querySelectorAll('.pcard').forEach(function(c){c.style.display=(f==='all'||c.dataset.cat===f)?'block':'none';});});});
+
+/* SELECTOR BUTTONS — also update hidden fields for Formspree */
+document.querySelectorAll('.seb').forEach(function(b){b.addEventListener('click',function(){var g=this.dataset.g;document.querySelectorAll('.seb[data-g="'+g+'"]').forEach(function(x){x.classList.remove('sea');});this.classList.add('sea');var hid=document.getElementById(g+'-hidden');if(hid)hid.value=this.textContent;});});
+
+document.querySelectorAll('.slbtn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.slbtn').forEach(function(x){x.classList.remove('sel');});this.classList.add('sel');});});
+
+/* BLOG CARD CLICKS */
+document.querySelectorAll('.bpost[data-article]').forEach(function(card){
+  card.addEventListener('click',function(){goTo(this.dataset.article);});
+});
+var form=document.getElementById('contact-form');
+if(form){
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=document.getElementById('form-submit-btn');
+    btn.disabled=true;btn.innerHTML='Sending…';
+    fetch('https://formspree.io/f/gonzalezsamf@gmail.com',{
+      method:'POST',body:new FormData(form),headers:{Accept:'application/json'}
+    }).then(function(r){
+      if(r.ok){
+        document.getElementById('formMsg').style.display='block';
+        btn.innerHTML='✓ Sent!';form.reset();
+        document.querySelectorAll('.seb.sea').forEach(function(x){x.classList.remove('sea');});
+      } else {btn.disabled=false;btn.innerHTML='Send Message →';alert('Something went wrong. Please email us directly at Gonzalezsamf@gmail.com');}
+    }).catch(function(){btn.disabled=false;btn.innerHTML='Send Message →';alert('Something went wrong. Please email us directly at Gonzalezsamf@gmail.com');});
+  });
+}
+
+var fc=document.querySelector('.fcta');
+if(fc)window.addEventListener('scroll',function(){fc.style.opacity=scrollY>300?'1':'0';fc.style.pointerEvents=scrollY>300?'auto':'none';},{passive:true});
+
+/* PROJECT MODAL */
+var modal=document.getElementById('project-modal');
+var iframe=document.getElementById('modal-iframe');
+document.getElementById('view-titan-tax').addEventListener('click',function(){
+  iframe.src='titan_tax_advisors.html';
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+});
+document.getElementById('modal-close').addEventListener('click',function(){
+  modal.classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(function(){iframe.src='';},300);
+});
+modal.addEventListener('click',function(e){
+  if(e.target===modal){
+    modal.classList.remove('open');
+    document.body.style.overflow='';
+    setTimeout(function(){iframe.src='';},300);
+  }
+});
+})();
+</script>
+
+<!-- ===== THREE.JS 3D MACBOOK HERO ===== -->
+<script>
+(function(){
+  if(typeof THREE==='undefined')return;
+  if(window.innerWidth<=900)return;
+
+  // Defer until after layout paints so clientWidth is correct
+  requestAnimationFrame(function(){ requestAnimationFrame(initMac3D); });
+
+  function initMac3D(){
+  var container=document.getElementById('mac3d-wrap');
+  var canvas=document.getElementById('mac3d-canvas');
+  if(!container||!canvas)return;
+
+  // ── Scene ──────────────────────────────────────────────
+  var scene=new THREE.Scene();
+
+  var W=container.clientWidth||600;
+  var H=container.clientHeight||500;
+
+  var camera=new THREE.PerspectiveCamera(32,W/H,0.1,100);
+  camera.position.set(1.3,1.1,4.0);
+  camera.lookAt(0,0.32,-0.18);
+
+  var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+  renderer.setSize(W,H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.05;
+
+  // ── Materials ──────────────────────────────────────────
+  var alMat=new THREE.MeshStandardMaterial({color:0xc4c4c4,metalness:0.92,roughness:0.09});
+  var darkMat=new THREE.MeshStandardMaterial({color:0x1c1c1e,metalness:0.45,roughness:0.48});
+  var edgeMat=new THREE.MeshStandardMaterial({color:0xdddddd,metalness:0.98,roughness:0.05});
+  var kbMat=new THREE.MeshStandardMaterial({color:0xb2b2b2,metalness:0.85,roughness:0.2});
+  var tpMat=new THREE.MeshStandardMaterial({color:0xb8b8b8,metalness:0.88,roughness:0.14});
+  var rubberMat=new THREE.MeshStandardMaterial({color:0x111111,roughness:0.9,metalness:0.0});
+
+  // ── Screen Canvas Texture ──────────────────────────────
+  var sc=document.createElement('canvas');
+  sc.width=1280;sc.height=800;
+  var sctx=sc.getContext('2d');
+  drawScreen(sctx,1280,800);
+  var screenTex=new THREE.CanvasTexture(sc);
+  var screenMat=new THREE.MeshBasicMaterial({map:screenTex});
+
+  // ── MacBook Group ──────────────────────────────────────
+  var mac=new THREE.Group();
+  mac.rotation.y=-0.38;
+  mac.rotation.x=0.04;
+  mac.rotation.z=0.02;
+  scene.add(mac);
+
+  // BASE
+  var baseMesh=new THREE.Mesh(new THREE.BoxGeometry(2.0,0.046,1.38),alMat);
+  baseMesh.castShadow=true;baseMesh.receiveShadow=true;
+  mac.add(baseMesh);
+
+  // Base underside
+  var baseBot=new THREE.Mesh(new THREE.BoxGeometry(1.97,0.003,1.35),new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.8,metalness:0.1}));
+  baseBot.position.y=-0.025;mac.add(baseBot);
+
+  // Keyboard area
+  var kbMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.85,1.16),kbMat);
+  kbMesh.rotation.x=-Math.PI/2;kbMesh.position.set(0,0.024,0.04);
+  mac.add(kbMesh);
+
+  // Trackpad
+  var tpMesh=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.003,0.38),tpMat);
+  tpMesh.position.set(0,0.024,0.44);mac.add(tpMesh);
+
+  // Hinge
+  var hinge=new THREE.Mesh(new THREE.CylinderGeometry(0.021,0.021,1.65,16),edgeMat);
+  hinge.rotation.z=Math.PI/2;hinge.position.set(0,0.034,-0.685);
+  mac.add(hinge);
+
+  // Rubber feet
+  [[-0.84,-0.57],[0.84,-0.57],[-0.84,0.57],[0.84,0.57]].forEach(function(p){
+    var f=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.045,0.01,8),rubberMat);
+    f.position.set(p[0],-0.027,p[1]);mac.add(f);
+  });
+
+  // LID (open ~105°: center at calculated world pos, tilted back 15° from vertical)
+  var lidGroup=new THREE.Group();
+  lidGroup.position.set(0,0.641,-0.856);
+  lidGroup.rotation.x=THREE.MathUtils.degToRad(-15);
+  mac.add(lidGroup);
+
+  // Lid outer shell (aluminum back)
+  var lidOut=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.28,0.046),alMat);
+  lidOut.castShadow=true;
+  lidGroup.add(lidOut);
+
+  // Lid inner face (dark bezel)
+  var lidIn=new THREE.Mesh(new THREE.BoxGeometry(1.94,1.22,0.012),darkMat);
+  lidIn.position.set(0,0,0.026);lidGroup.add(lidIn);
+
+  // Screen
+  var scrMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.72,1.075),screenMat);
+  scrMesh.position.set(0,0.005,0.033);lidGroup.add(scrMesh);
+
+  // Notch
+  var notch=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.022,0.014),darkMat);
+  notch.position.set(0,0.617,0.034);lidGroup.add(notch);
+
+  // Camera dot
+  var camDot=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,0.006,8),new THREE.MeshStandardMaterial({color:0x2a2a2a,roughness:0.8}));
+  camDot.rotation.x=Math.PI/2;camDot.position.set(0,0.618,0.038);lidGroup.add(camDot);
+
+  // Top edge shine
+  var topEdge=new THREE.Mesh(new THREE.BoxGeometry(2.0,0.008,0.046),edgeMat);
+  topEdge.position.set(0,0.644,0);lidGroup.add(topEdge);
+
+  // Screen glass glare (subtle)
+  var glareMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.04,depthWrite:false});
+  var glareGeo=new THREE.PlaneGeometry(0.6,0.8);
+  var glare=new THREE.Mesh(glareGeo,glareMat);
+  glare.position.set(-0.55,0.25,0.034);glare.rotation.z=0.35;
+  lidGroup.add(glare);
+
+  // ── Shadow catcher ─────────────────────────────────────
+  var shadowGeo=new THREE.PlaneGeometry(10,10);
+  var shadowMat2=new THREE.ShadowMaterial({opacity:0.32});
+  var shadowPlane=new THREE.Mesh(shadowGeo,shadowMat2);
+  shadowPlane.rotation.x=-Math.PI/2;shadowPlane.position.y=-0.68;
+  shadowPlane.receiveShadow=true;scene.add(shadowPlane);
+
+  // ── Lights ─────────────────────────────────────────────
+  scene.add(new THREE.AmbientLight(0xfff5e8,0.42));
+
+  var key=new THREE.DirectionalLight(0xffffff,2.8);
+  key.position.set(4,8,5);key.castShadow=true;
+  key.shadow.bias=-0.001;key.shadow.mapSize.set(2048,2048);
+  key.shadow.camera.left=-5;key.shadow.camera.right=5;
+  key.shadow.camera.top=6;key.shadow.camera.bottom=-4;
+  scene.add(key);
+
+  var purpleL=new THREE.PointLight(0xb09fea,5.0,16);
+  purpleL.position.set(-3.5,2.5,1.5);scene.add(purpleL);
+
+  var mintL=new THREE.PointLight(0x89d4c0,3.8,14);
+  mintL.position.set(3.0,-0.5,2.5);scene.add(mintL);
+
+  var rimL=new THREE.DirectionalLight(0xe8e4ff,0.75);
+  rimL.position.set(-4,2,-5);scene.add(rimL);
+
+  var fillL=new THREE.PointLight(0xffffff,0.5,8);
+  fillL.position.set(0,-2,2);scene.add(fillL);
+
+  // ── Animate ───────────────────────────────────────────
+  var t=0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t+=0.016;
+    mac.position.y=Math.sin(t*0.55)*0.065;
+    mac.rotation.y=-0.38+Math.sin(t*0.28)*0.022;
+    renderer.render(scene,camera);
+  }
+  animate();
+
+  // ── Resize ────────────────────────────────────────────
+  window.addEventListener('resize',function(){
+    if(window.innerWidth<=900)return;
+    W=container.clientWidth;H=container.clientHeight;
+    camera.aspect=W/H;camera.updateProjectionMatrix();
+    renderer.setSize(W,H);
+  },{passive:true});
+
+  // ── Draw S&J website on screen canvas ─────────────────
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+    ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);
+    ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
+    ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);
+    ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+  }
+
+  function drawScreen(ctx,w,h){
+    // Dark hero background
+    var bg=ctx.createLinearGradient(0,0,w*0.6,h);
+    bg.addColorStop(0,'#1a1a2e');bg.addColorStop(1,'#251e50');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+
+    // Grid lines
+    ctx.strokeStyle='rgba(176,159,234,0.04)';ctx.lineWidth=1;
+    for(var x=0;x<w;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    for(var y=0;y<h;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+
+    // Orb glow
+    var orb=ctx.createRadialGradient(w/2,h*0.38,0,w/2,h*0.38,420);
+    orb.addColorStop(0,'rgba(176,159,234,0.25)');
+    orb.addColorStop(0.45,'rgba(176,159,234,0.09)');
+    orb.addColorStop(1,'transparent');
+    ctx.fillStyle=orb;ctx.fillRect(0,0,w,h);
+
+    // Right orb (mint)
+    var orb2=ctx.createRadialGradient(w*0.82,h*0.72,0,w*0.82,h*0.72,260);
+    orb2.addColorStop(0,'rgba(137,212,192,0.12)');orb2.addColorStop(1,'transparent');
+    ctx.fillStyle=orb2;ctx.fillRect(0,0,w,h);
+
+    // ── NAV BAR ──
+    ctx.fillStyle='rgba(250,248,245,0.97)';ctx.fillRect(0,0,w,52);
+    ctx.fillStyle='rgba(0,0,0,0.06)';ctx.fillRect(0,52,w,1);
+
+    // Logo S&J
+    ctx.font='bold 20px Arial';ctx.textAlign='left';
+    ctx.fillStyle='#1e1b2e';ctx.fillText('S',32,35);
+    var lg=ctx.createLinearGradient(46,0,72,0);
+    lg.addColorStop(0,'#b09fea');lg.addColorStop(1,'#89d4c0');
+    ctx.fillStyle=lg;ctx.fillText('&',47,35);
+    ctx.fillStyle='#1e1b2e';ctx.fillText('J',68,35);
+    // dot
+    ctx.fillStyle='#89d4c0';ctx.beginPath();ctx.arc(90,28,4,0,Math.PI*2);ctx.fill();
+
+    // Nav links
+    ctx.font='14px Arial';ctx.fillStyle='#8a8499';
+    ['Services','Work','Pricing'].forEach(function(t,i){ctx.fillText(t,w*0.59+i*88,34);});
+
+    // CTA button
+    ctx.fillStyle='#1e1b2e';
+    roundRect(ctx,w*0.855,14,138,27,13.5);ctx.fill();
+    ctx.font='bold 12px Arial';ctx.fillStyle='#fff';ctx.textAlign='center';
+    ctx.fillText('Get a Quote →',w*0.855+69,32);
+
+    // ── PILL BADGE ──
+    ctx.fillStyle='rgba(176,159,234,0.16)';
+    roundRect(ctx,w/2-148,78,296,26,13);ctx.fill();
+    ctx.strokeStyle='rgba(176,159,234,0.34)';ctx.lineWidth=1;
+    roundRect(ctx,w/2-148,78,296,26,13);ctx.stroke();
+    ctx.fillStyle='#89d4c0';ctx.beginPath();ctx.arc(w/2-122,91,4,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 10.5px Arial';ctx.fillStyle='#b09fea';ctx.textAlign='center';
+    ctx.fillText('NOW ACCEPTING PROJECTS',w/2+5,94);
+
+    // ── HEADLINE ──
+    ctx.shadowColor='rgba(176,159,234,0.35)';ctx.shadowBlur=32;
+    ctx.font='bold 76px Arial';ctx.fillStyle='#ffffff';ctx.textAlign='center';
+    ctx.fillText('Your Website Should',w/2,228);
+    var hg=ctx.createLinearGradient(0,0,w,0);
+    hg.addColorStop(0,'#b09fea');hg.addColorStop(1,'#89d4c0');
+    ctx.fillStyle=hg;ctx.fillText('Make You Money',w/2,316);
+    ctx.shadowBlur=0;
+
+    // ── SUBTEXT ──
+    ctx.font='20px Arial';ctx.fillStyle='rgba(255,255,255,0.5)';ctx.textAlign='center';
+    ctx.fillText('Custom-built websites that convert visitors into paying customers.',w/2,374);
+    ctx.fillText('Live in weeks, not months.',w/2,400);
+
+    // ── CTA BUTTONS ──
+    ctx.fillStyle='#1e1b2e';
+    roundRect(ctx,w/2-228,426,192,48,24);ctx.fill();
+    ctx.font='bold 16px Arial';ctx.fillStyle='#fff';ctx.textAlign='center';
+    ctx.fillText('Start Your Project →',w/2-132,456);
+
+    ctx.strokeStyle='rgba(255,255,255,0.28)';ctx.lineWidth=1.5;
+    roundRect(ctx,w/2+14,426,162,48,24);ctx.stroke();
+    ctx.font='16px Arial';ctx.fillStyle='rgba(255,255,255,0.7)';ctx.textAlign='center';
+    ctx.fillText('See Our Work',w/2+95,456);
+
+    // ── TRUST ROW ──
+    ctx.font='13px Arial';ctx.fillStyle='rgba(255,255,255,0.37)';
+    ['🔒 You own all files','⚡ 2–3 weeks','🎯 From $250','📍 Long Island, NY'].forEach(function(txt,i){
+      ctx.textAlign='center';ctx.fillText(txt,(w/4)*(i+0.5),510);
+    });
+
+    // ── MARQUEE BAR ──
+    ctx.fillStyle='#f3f0ec';ctx.fillRect(0,545,w,28);
+    ctx.fillStyle='rgba(0,0,0,0.06)';ctx.fillRect(0,545,w,1);
+    ctx.fillStyle='#8a8499';ctx.font='12px Arial';
+    var mqs=['● Custom Web Design','● E-Commerce','● SEO Optimization','● Landing Pages','● Performance'];
+    mqs.forEach(function(m,i){ctx.textAlign='left';ctx.fillText(m,(w/mqs.length)*i+14,564);});
+
+    // ── SERVICES PREVIEW ──
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,573,w,h-573);
+    ctx.font='bold 18px Arial';ctx.fillStyle='#1e1b2e';ctx.textAlign='center';
+    ctx.fillText('Everything Your Business Needs Online',w/2,608);
+
+    // 3 mini cards
+    [[96,624,'🎨','Services','Design & Development'],[w/2-115,624,'🖥️','Our Work','Real results.'],[w-346,624,'✉️','Start Project','Free quote 24h']].forEach(function(c){
+      ctx.fillStyle='#faf8f5';
+      roundRect(ctx,c[0],c[1],218,h-c[1]-10,8);ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=1;
+      roundRect(ctx,c[0],c[1],218,h-c[1]-10,8);ctx.stroke();
+      ctx.font='22px Arial';ctx.textAlign='center';ctx.fillText(c[2],c[0]+109,c[1]+36);
+      ctx.font='bold 14px Arial';ctx.fillStyle='#1e1b2e';ctx.fillText(c[3],c[0]+109,c[1]+58);
+      ctx.font='11px Arial';ctx.fillStyle='#8a8499';ctx.fillText(c[4],c[0]+109,c[1]+75);
+    });
+
+    // Screen glare overlay
+    var glare=ctx.createLinearGradient(0,0,w*0.38,h*0.45);
+    glare.addColorStop(0,'rgba(255,255,255,0.035)');glare.addColorStop(1,'transparent');
+    ctx.fillStyle=glare;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(w*0.4,0);ctx.lineTo(0,h*0.5);ctx.closePath();ctx.fill();
+  }
+  } // end initMac3D
+})();
+</script>
+</body>
+</html>

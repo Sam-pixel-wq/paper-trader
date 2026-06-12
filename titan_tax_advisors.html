@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titan Tax Advisors | Expert Tax Services on Long Island</title>
+<meta name="description" content="Titan Tax Advisors — Expert tax preparation, planning, and advisory services for individuals and businesses on Long Island, NY.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0f1a;--surface:#1a1a2e;--surface2:#232340;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --accent:#b09fea;--accent2:#89d4c0;
+  --text:#f0eeff;--muted:rgba(240,238,255,0.55);--muted2:rgba(240,238,255,0.35);
+  --grad:linear-gradient(135deg,#b09fea,#89d4c0);
+  --t:.22s ease;--r:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
+button,a{font-family:inherit;cursor:pointer;text-decoration:none;}
+
+/* UTILS */
+.gt{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all var(--t);}
+.btn-p{background:var(--grad);color:#fff;padding:.85rem 2rem;font-size:.9rem;box-shadow:0 4px 20px rgba(176,159,234,.35);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(176,159,234,.45);}
+.btn-s{background:transparent;color:var(--text);padding:.85rem 2rem;font-size:.9rem;border:1px solid var(--border2);}
+.btn-s:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+@keyframes up{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes orb{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,-15px);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;display:flex;align-items:center;justify-content:space-between;padding:.9rem 3rem;background:rgba(15,15,26,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;background:none;border:none;color:var(--text);}
+.nav-links{display:flex;gap:.15rem;list-style:none;align-items:center;}
+.nav-links a{color:var(--muted);font-size:.85rem;font-weight:400;padding:.38rem .8rem;border-radius:8px;transition:all var(--t);}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);}
+.nav-cta{background:var(--grad)!important;color:#fff!important;padding:.46rem 1.2rem!important;border-radius:100px!important;font-weight:500!important;}
+.nav-cta:hover{transform:translateY(-1px)!important;box-shadow:0 4px 18px rgba(176,159,234,.3)!important;}
+@media(max-width:768px){.nav-links li:not(:last-child){display:none;}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 4rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 30%,rgba(176,159,234,.12),transparent 70%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(176,159,234,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(176,159,234,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,black 20%,transparent 100%);}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;}
+.o1{width:500px;height:500px;background:radial-gradient(circle,rgba(176,159,234,.15),transparent 70%);top:-100px;left:50%;transform:translateX(-50%);animation:orb 14s ease-in-out infinite;}
+.o2{width:300px;height:300px;background:radial-gradient(circle,rgba(137,212,192,.1),transparent 70%);bottom:0;right:-60px;animation:orb 18s ease-in-out infinite reverse;}
+.hero-inner{position:relative;z-index:2;max-width:760px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;background:rgba(176,159,234,.1);border:1px solid rgba(176,159,234,.28);color:var(--accent);font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.32rem .9rem;border-radius:100px;margin-bottom:1.6rem;animation:up .5s ease both;}
+.hero-badge .dot{width:5px;height:5px;background:var(--accent2);border-radius:50%;animation:pulse 1.5s infinite;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.6rem,6vw,4.5rem);line-height:.97;letter-spacing:-.045em;margin-bottom:1.35rem;animation:up .5s .08s ease both;}
+.hero h1 .l2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:520px;margin:0 auto 2.5rem;line-height:1.8;animation:up .5s .16s ease both;}
+.hero-ctas{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;animation:up .5s .24s ease both;}
+.hero-trust{display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;animation:up .5s .32s ease both;}
+.trust-item{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted);}
+.trust-item strong{color:var(--text);font-weight:500;}
+
+/* MARQUEE */
+.marquee-wrap{width:100%;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,.025);padding:.6rem 0;position:relative;z-index:2;}
+.marquee-row{display:flex;gap:2.5rem;animation:marquee 24s linear infinite;width:max-content;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.mq-item{display:flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:500;color:var(--muted2);white-space:nowrap;}
+.mq-dot{width:3px;height:3px;background:var(--accent);border-radius:50%;}
+
+/* STATS */
+.stats-section{padding:4rem 0;background:var(--surface);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);max-width:1100px;margin:0 auto;padding:0 2.5rem;}
+.stat-item{text-align:center;padding:1.5rem .75rem;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;letter-spacing:-.04em;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.25rem;}
+.stat-label{font-size:.76rem;color:var(--muted);}
+@media(max-width:700px){.stats-grid{grid-template-columns:1fr 1fr;}.stat-item{border-right:none;border-bottom:1px solid var(--border);}.stat-item:last-child,.stat-item:nth-last-child(2):nth-child(odd){border-bottom:none;}}
+
+/* SERVICES */
+.section{padding:5rem 0;}
+.section-inner{max-width:1100px;margin:0 auto;padding:0 2.5rem;}
+.section-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;display:flex;align-items:center;gap:.45rem;}
+.section-label::before{content:'';width:14px;height:1.5px;background:var(--grad);border-radius:2px;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-.035em;line-height:1.08;margin-bottom:.7rem;}
+.section-sub{color:var(--muted);font-size:.95rem;line-height:1.75;max-width:500px;margin-bottom:3rem;}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem;}
+.service-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;position:relative;overflow:hidden;transition:all var(--t);}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:opacity var(--t);}
+.service-card:hover{border-color:rgba(176,159,234,.28);transform:translateY(-4px);box-shadow:0 14px 40px rgba(176,159,234,.1);}
+.service-card:hover::before{opacity:1;}
+.svc-ico{font-size:1.6rem;margin-bottom:1.1rem;display:block;}
+.service-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+.service-card p{color:var(--muted);font-size:.83rem;line-height:1.65;}
+@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.services-grid{grid-template-columns:1fr;}}
+
+/* WHO WE SERVE */
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
+.who-list{display:flex;flex-direction:column;gap:.85rem;margin-top:1.5rem;}
+.who-item{display:flex;align-items:center;gap:.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;transition:all var(--t);}
+.who-item:hover{border-color:rgba(176,159,234,.28);}
+.who-ico{font-size:1.3rem;flex-shrink:0;}
+.who-item h4{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:.12rem;}
+.who-item p{color:var(--muted);font-size:.78rem;}
+.who-visual{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;position:relative;overflow:hidden;}
+.who-visual::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);}
+.who-visual h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}
+.who-visual p{color:var(--muted);font-size:.84rem;line-height:1.7;margin-bottom:1.25rem;}
+@media(max-width:900px){.who-grid{grid-template-columns:1fr;}}
+
+/* PROCESS */
+.process-steps{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem;}
+.process-step{display:flex;gap:1.25rem;align-items:flex-start;padding:1.35rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);transition:all var(--t);}
+.process-step:hover{border-color:rgba(176,159,234,.28);transform:translateX(4px);}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#fff;flex-shrink:0;}
+.step-content h4{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:.22rem;}
+.step-content p{color:var(--muted);font-size:.82rem;line-height:1.62;}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.15rem;}
+.testi-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;position:relative;transition:all var(--t);}
+.testi-card::before{content:'\201C';position:absolute;top:.9rem;right:1.4rem;font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:rgba(176,159,234,.15);line-height:1;}
+.testi-card:hover{border-color:rgba(176,159,234,.28);transform:translateY(-2px);box-shadow:0 8px 24px rgba(176,159,234,.1);}
+.testi-stars{color:#f5a623;font-size:.8rem;margin-bottom:.75rem;}
+.testi-text{font-size:.87rem;color:var(--text);line-height:1.78;margin-bottom:1.25rem;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:.75rem;}
+.testi-av{width:38px;height:38px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:#fff;flex-shrink:0;}
+.testi-name{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;}
+.testi-role{font-size:.72rem;color:var(--muted);}
+@media(max-width:768px){.testi-grid{grid-template-columns:1fr;}}
+
+/* CTA SECTION */
+.cta-section{padding:6rem 0;background:var(--surface);position:relative;overflow:hidden;text-align:center;}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(176,159,234,.1),transparent 70%);}
+.cta-inner{position:relative;z-index:2;max-width:620px;margin:0 auto;padding:0 1.5rem;}
+.cta-inner h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-bottom:.85rem;}
+.cta-inner p{color:var(--muted);font-size:1rem;line-height:1.78;margin-bottom:2.25rem;}
+.cta-btns{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap;}
+
+/* CONTACT FORM SECTION */
+.contact-section{padding:5rem 0;}
+.contact-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:3.5rem;align-items:start;}
+.contact-info{display:flex;flex-direction:column;gap:1.25rem;}
+.cinfo-item{display:flex;gap:.9rem;align-items:flex-start;}
+.cinfo-ico{width:40px;height:40px;background:rgba(176,159,234,.1);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.cinfo-item h5{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;margin-bottom:.12rem;}
+.cinfo-item p,.cinfo-item a{color:var(--muted);font-size:.82rem;}
+.contact-form-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem;}
+.fgrp{display:flex;flex-direction:column;gap:.32rem;margin-bottom:.9rem;}
+.fgrp label{font-size:.72rem;font-weight:600;color:var(--text);letter-spacing:.02em;}
+.fgrp input,.fgrp select,.fgrp textarea{background:rgba(255,255,255,.05);border:1.5px solid var(--border2);color:var(--text);padding:.75rem .9rem;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color var(--t),box-shadow var(--t);resize:none;}
+.fgrp input::placeholder,.fgrp textarea::placeholder{color:var(--muted2);}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(176,159,234,.12);}
+.fgrp select option{background:#1a1a2e;}
+.fsub{background:var(--grad);color:#fff;border:none;padding:.88rem 2rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;transition:all var(--t);box-shadow:0 4px 20px rgba(176,159,234,.3);cursor:pointer;}
+.fsub:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(176,159,234,.45);}
+.fmsg{display:none;padding:.9rem;background:rgba(137,212,192,.1);border:1px solid rgba(137,212,192,.25);border-radius:9px;color:#89d4c0;font-size:.85rem;text-align:center;margin-top:.75rem;}
+@media(max-width:900px){.contact-wrap{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}}
+
+/* FOOTER */
+.footer{background:#0a0a14;color:rgba(240,238,255,.45);padding:3rem 0 1.5rem;border-top:1px solid var(--border);}
+.footer-inner{max-width:1100px;margin:0 auto;padding:0 2.5rem;}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.footer-brand h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--text);margin-bottom:.5rem;}
+.footer-brand p{font-size:.8rem;line-height:1.75;max-width:240px;}
+.footer-links h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;color:var(--text);margin-bottom:.85rem;letter-spacing:.05em;}
+.footer-links ul{list-style:none;display:flex;flex-direction:column;gap:.35rem;}
+.footer-links a{font-size:.78rem;color:rgba(240,238,255,.38);transition:color var(--t);}
+.footer-links a:hover{color:var(--text);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.footer-bottom p{font-size:.73rem;}
+.footer-badge{font-size:.72rem;color:rgba(240,238,255,.35);}
+.footer-badge a{color:var(--accent);opacity:.75;}
+.footer-badge a:hover{opacity:1;}
+
+/* AVAILABILITY BANNER */
+.avail-banner{display:flex;align-items:center;gap:.65rem;background:rgba(137,212,192,.07);border:1px solid rgba(137,212,192,.2);border-radius:var(--r);padding:.85rem 1.1rem;margin-bottom:2rem;font-size:.82rem;color:var(--accent2);}
+.avail-dot{width:6px;height:6px;background:#89d4c0;border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Titan Tax Advisors</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#who-we-serve">Who We Serve</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">About</a></li>
+    <li><a href="#contact" class="nav-cta">Book Free Call →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="dot"></div>Long Island's Trusted Tax Experts</div>
+    <h1>Expert Tax Services<span class="l2">on Long Island</span></h1>
+    <p class="hero-sub">Trusted tax preparation, planning, and advisory for individuals and businesses. We handle the numbers so you can focus on what matters.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-p">Book a Free Call →</a>
+      <a href="#services" class="btn btn-s">Our Services</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item">🏆 <strong>20+ Years</strong> Experience</div>
+      <div class="trust-item">📍 <strong>Long Island, NY</strong></div>
+      <div class="trust-item">✓ <strong>IRS Enrolled</strong> Agent</div>
+      <div class="trust-item">📞 Free <strong>Consultation</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-row">
+    <div class="mq-item"><div class="mq-dot"></div>Tax Preparation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Business Tax Filing</div>
+    <div class="mq-item"><div class="mq-dot"></div>IRS Representation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Tax Planning</div>
+    <div class="mq-item"><div class="mq-dot"></div>Bookkeeping</div>
+    <div class="mq-item"><div class="mq-dot"></div>LLC &amp; S-Corp Formation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Audit Support</div>
+    <div class="mq-item"><div class="mq-dot"></div>Payroll Services</div>
+    <div class="mq-item"><div class="mq-dot"></div>Tax Preparation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Business Tax Filing</div>
+    <div class="mq-item"><div class="mq-dot"></div>IRS Representation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Tax Planning</div>
+    <div class="mq-item"><div class="mq-dot"></div>Bookkeeping</div>
+    <div class="mq-item"><div class="mq-dot"></div>LLC &amp; S-Corp Formation</div>
+    <div class="mq-item"><div class="mq-dot"></div>Audit Support</div>
+    <div class="mq-item"><div class="mq-dot"></div>Payroll Services</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Clients Served</div></div>
+    <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat-item"><div class="stat-num">$2M+</div><div class="stat-label">Tax Savings Found</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Satisfaction Rate</div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title gt">Complete Tax &amp;<br>Advisory Services</h2>
+    <p class="section-sub">From annual filing to strategic year-round planning. We handle every aspect of your tax situation.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="svc-ico">📋</span>
+        <h3>Tax Preparation</h3>
+        <p>Accurate, thorough filing for individuals, families, and businesses. Personal, corporate, partnership, and trust returns.</p>
+      </div>
+      <div class="service-card">
+        <span class="svc-ico">📊</span>
+        <h3>Tax Planning</h3>
+        <p>Year-round strategy to legally minimize your tax liability. We look ahead, not just at last year's return.</p>
+      </div>
+      <div class="service-card">
+        <span class="svc-ico">🏢</span>
+        <h3>Business Tax Services</h3>
+        <p>Entity formation, corporate tax strategy, payroll taxes, and everything your business needs to stay compliant.</p>
+      </div>
+      <div class="service-card">
+        <span class="svc-ico">🔍</span>
+        <h3>IRS Representation</h3>
+        <p>If you receive a notice or audit, we represent you directly before the IRS. You don't have to face them alone.</p>
+      </div>
+      <div class="service-card">
+        <span class="svc-ico">📒</span>
+        <h3>Bookkeeping &amp; Payroll</h3>
+        <p>Monthly bookkeeping, payroll processing, and financial statements so your records are always clean and current.</p>
+      </div>
+      <div class="service-card">
+        <span class="svc-ico">🏗️</span>
+        <h3>Business Formation</h3>
+        <p>LLC, S-Corp, C-Corp setup with proper structure from day one. Set up right and pay less tax as you grow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO WE SERVE -->
+<section class="section" id="who-we-serve" style="background:var(--surface);padding:5rem 0;">
+  <div class="section-inner">
+    <div class="who-grid">
+      <div>
+        <div class="section-label">Who We Serve</div>
+        <h2 class="section-title gt">From Families to<br>Growing Businesses</h2>
+        <p class="section-sub">Whether you're filing your first return or running a multi-entity business, we have the expertise to handle your situation.</p>
+        <div class="who-list">
+          <div class="who-item"><div class="who-ico">👨‍👩‍👧</div><div><h4>Individuals &amp; Families</h4><p>Personal returns, deductions, credits, and annual planning.</p></div></div>
+          <div class="who-item"><div class="who-ico">🏪</div><div><h4>Small Business Owners</h4><p>S-Corps, LLCs, partnerships, and sole proprietors.</p></div></div>
+          <div class="who-item"><div class="who-ico">🏗️</div><div><h4>Real Estate Investors</h4><p>Rental income, depreciation, 1031 exchanges, cost segregation.</p></div></div>
+          <div class="who-item"><div class="who-ico">💼</div><div><h4>Self-Employed &amp; Freelancers</h4><p>Quarterly estimates, deductions, and business expenses.</p></div></div>
+        </div>
+      </div>
+      <div class="who-visual">
+        <div style="font-size:3.5rem;margin-bottom:1.25rem;">🏆</div>
+        <h3 class="gt">Why Long Island Trusts Us</h3>
+        <p>We've been helping Long Island residents and businesses navigate taxes for over 20 years. Our clients stay with us because we treat their money like our own.</p>
+        <a href="#contact" class="btn btn-p" style="display:inline-flex;margin-top:.25rem;">Book a Free Consultation →</a>
+        <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:1.5rem;text-align:left;">
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);"><span style="color:var(--accent2);font-weight:700;">✓</span> No surprise fees — transparent pricing</div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);"><span style="color:var(--accent2);font-weight:700;">✓</span> Direct access to your advisor</div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);"><span style="color:var(--accent2);font-weight:700;">✓</span> Year-round availability (not just tax season)</div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);"><span style="color:var(--accent2);font-weight:700;">✓</span> Long Island office — local, not a call center</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section" id="process">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div class="section-label" style="justify-content:center;">How It Works</div>
+      <h2 class="section-title gt" style="text-align:center;">Simple, Straightforward<br>From Start to Filing</h2>
+    </div>
+    <div class="process-steps" style="max-width:680px;margin:0 auto;">
+      <div class="process-step"><div class="step-num">1</div><div class="step-content"><h4>Free Consultation</h4><p>A no-pressure call to understand your situation and what you need. We'll tell you exactly what we can do for you and at what cost — before any commitment.</p></div></div>
+      <div class="process-step"><div class="step-num">2</div><div class="step-content"><h4>Document Collection</h4><p>We provide a simple checklist of what we need. Upload securely through our portal or drop off in person. We make it as easy as possible.</p></div></div>
+      <div class="process-step"><div class="step-num">3</div><div class="step-content"><h4>Preparation &amp; Review</h4><p>We prepare your return with precision, flag any issues, and identify every deduction and credit you're entitled to. Then we walk you through it.</p></div></div>
+      <div class="process-step"><div class="step-num">4</div><div class="step-content"><h4>Filing &amp; Follow-Up</h4><p>We file electronically and confirm receipt. After filing, we remain available for any questions, notices, or planning for the year ahead.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background:var(--surface);padding:5rem 0;">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div class="section-label" style="justify-content:center;">Testimonials</div>
+      <h2 class="section-title gt" style="text-align:center;">What Our Clients Say</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Switched to Titan Tax after a bad experience with a big national chain. The difference is night and day — they actually know my situation and proactively reached out about a deduction I missed for years. Saved me over $3,000."</p>
+        <div class="testi-author"><div class="testi-av">MR</div><div><div class="testi-name">Michael R.</div><div class="testi-role">Small Business Owner, Massapequa</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I had an IRS notice that terrified me. They handled everything — communicated directly with the IRS, explained every step, and resolved it with no penalties. I can't recommend them enough for the peace of mind alone."</p>
+        <div class="testi-author"><div class="testi-av">SL</div><div><div class="testi-name">Sarah L.</div><div class="testi-role">Freelance Designer, Garden City</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"They set up my LLC and handled the first year of business taxes. Their structure advice alone saved me thousands compared to what I would have paid filing incorrectly. They're a business partner, not just a tax preparer."</p>
+        <div class="testi-author"><div class="testi-av">JK</div><div><div class="testi-name">James K.</div><div class="testi-role">Real Estate Investor, Syosset</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Been going to Titan for 8 years with my family. Never once felt like a number. They remember our situation every year and always find a way to get us the best possible outcome. Wouldn't go anywhere else."</p>
+        <div class="testi-author"><div class="testi-av">DM</div><div><div class="testi-name">Diane M.</div><div class="testi-role">Registered Nurse, Huntington</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="section-label" style="justify-content:center;margin-bottom:.9rem;">Get Started</div>
+    <h2 class="gt">Ready to Stop Overpaying<br>on Taxes?</h2>
+    <p>Book a free 30-minute consultation. We'll review your situation, answer your questions, and let you know exactly how we can help — no obligation.</p>
+    <div class="cta-btns">
+      <a href="#contact" class="btn btn-p">Book Free Consultation →</a>
+      <a href="tel:5165551234" class="btn btn-s">Call (516) 555-1234</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section" id="contact">
+  <div class="section-inner">
+    <div class="avail-banner"><div class="avail-dot"></div><strong>Currently accepting new clients</strong> — response within 24 hours.</div>
+    <div class="contact-wrap">
+      <div>
+        <div class="section-label">Contact Us</div>
+        <h2 class="section-title gt">Let's Talk About<br>Your Taxes</h2>
+        <p class="section-sub" style="margin-bottom:2rem;">Free consultation for new clients. We'll review your situation and tell you exactly how we can help — before any commitment.</p>
+        <div class="contact-info">
+          <div class="cinfo-item"><div class="cinfo-ico">📍</div><div><h5>Location</h5><p>Long Island, New York</p></div></div>
+          <div class="cinfo-item"><div class="cinfo-ico">📞</div><div><h5>Phone</h5><a href="tel:5165551234">(516) 555-1234</a></div></div>
+          <div class="cinfo-item"><div class="cinfo-ico">📧</div><div><h5>Email</h5><p>info@titantaxadvisors.com</p></div></div>
+          <div class="cinfo-item"><div class="cinfo-ico">🕐</div><div><h5>Hours</h5><p>Mon–Fri 9am–6pm · Sat 10am–3pm (tax season)</p></div></div>
+        </div>
+      </div>
+      <div class="contact-form-wrap">
+        <form id="contact-form" action="https://formspree.io/f/gonzalezsamf@gmail.com" method="POST">
+          <div class="form-row">
+            <div class="fgrp"><label>First Name</label><input type="text" name="first_name" placeholder="John" required></div>
+            <div class="fgrp"><label>Last Name</label><input type="text" name="last_name" placeholder="Smith"></div>
+          </div>
+          <div class="fgrp"><label>Email</label><input type="email" name="email" placeholder="john@example.com" required></div>
+          <div class="fgrp"><label>Phone</label><input type="tel" name="phone" placeholder="(516) 555-0000"></div>
+          <div class="fgrp"><label>Service Needed</label>
+            <select name="service">
+              <option value="">Select a service...</option>
+              <option>Individual Tax Preparation</option>
+              <option>Business Tax Preparation</option>
+              <option>Tax Planning</option>
+              <option>IRS Representation</option>
+              <option>Bookkeeping / Payroll</option>
+              <option>Business Formation</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fgrp"><label>Tell Us About Your Situation</label><textarea name="message" rows="4" placeholder="Brief description of your tax situation or what you need help with..." required></textarea></div>
+          <input type="hidden" name="_subject" value="New inquiry — Titan Tax Advisors">
+          <input type="text" name="_gotcha" style="display:none">
+          <button type="submit" class="fsub">Send Message →</button>
+          <div class="fmsg" id="formMsg">✓ Sent! We'll be in touch within 24 hours.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>Titan Tax Advisors</h3>
+        <p>Expert tax services for individuals and businesses on Long Island. Trusted for over 20 years.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Tax Preparation</a></li>
+          <li><a href="#services">Tax Planning</a></li>
+          <li><a href="#services">Business Services</a></li>
+          <li><a href="#services">IRS Representation</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#who-we-serve">Who We Serve</a></li>
+          <li><a href="#process">Our Process</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:5165551234">(516) 555-1234</a></li>
+          <li><a href="mailto:info@titantaxadvisors.com">info@titantaxadvisors.com</a></li>
+          <li><a href="#">Long Island, New York</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Titan Tax Advisors. All rights reserved.</p>
+      <div class="footer-badge">Website by <a href="#">S&amp;J Digital Co.</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+var form = document.getElementById('contact-form');
+if(form){
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = form.querySelector('.fsub');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch('https://formspree.io/f/gonzalezsamf@gmail.com',{
+      method:'POST',body:new FormData(form),headers:{Accept:'application/json'}
+    }).then(function(r){
+      if(r.ok){
+        document.getElementById('formMsg').style.display='block';
+        btn.textContent='✓ Sent!'; form.reset();
+      } else { btn.disabled=false; btn.textContent='Send Message →'; }
+    }).catch(function(){ btn.disabled=false; btn.textContent='Send Message →'; });
+  });
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var target = document.querySelector(this.getAttribute('href'));
+    if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+
+// Nav scroll shadow
+window.addEventListener('scroll',function(){
+  document.querySelector('nav').style.boxShadow = scrollY > 40 ? '0 2px 20px rgba(176,159,234,.12)' : '';
+},{passive:true});
+</script>
+</body>
+</html>
