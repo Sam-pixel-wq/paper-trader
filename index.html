@@ -1942,16 +1942,327 @@ modal.addEventListener('click',function(e){
 <!-- ===== THREE.JS 3D MACBOOK HERO ===== -->
 <script>
 (function(){
-  if(typeof THREE==='undefined')return;
+  /* ── Guard: only run on desktop after fonts/layout settle ── */
   if(window.innerWidth<=900)return;
+  if(typeof THREE==='undefined')return;
 
-  // Defer until after layout paints so clientWidth is correct
-  requestAnimationFrame(function(){ requestAnimationFrame(initMac3D); });
+  window.addEventListener('load',function(){
+    setTimeout(initMac3D,80);
+  });
 
+  /* ══════════════════════════════════════════════════════════
+     HELPER: draw the S&J website onto an offscreen canvas
+  ══════════════════════════════════════════════════════════ */
+  function rr(ctx,x,y,w,h,r){
+    /* rounded rect path helper */
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+    ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);
+    ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
+    ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);
+    ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+  }
+
+  function buildScreenCanvas(){
+    var c=document.createElement('canvas');
+    c.width=1280;c.height=800;
+    var x=c.getContext('2d');
+    var W=1280,H=800;
+
+    /* ── Background ── */
+    var bg=x.createLinearGradient(0,0,W*.65,H);
+    bg.addColorStop(0,'#191830');bg.addColorStop(1,'#24195a');
+    x.fillStyle=bg;x.fillRect(0,0,W,H);
+
+    /* grid */
+    x.strokeStyle='rgba(176,159,234,0.045)';x.lineWidth=1;
+    for(var i=0;i<W;i+=60){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke();}
+    for(var j=0;j<H;j+=60){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke();}
+
+    /* purple orb */
+    var g1=x.createRadialGradient(W/2,H*.36,0,W/2,H*.36,400);
+    g1.addColorStop(0,'rgba(176,159,234,0.28)');
+    g1.addColorStop(.5,'rgba(176,159,234,0.10)');
+    g1.addColorStop(1,'transparent');
+    x.fillStyle=g1;x.fillRect(0,0,W,H);
+
+    /* mint orb bottom-right */
+    var g2=x.createRadialGradient(W*.85,H*.8,0,W*.85,H*.8,280);
+    g2.addColorStop(0,'rgba(137,212,192,0.15)');
+    g2.addColorStop(1,'transparent');
+    x.fillStyle=g2;x.fillRect(0,0,W,H);
+
+    /* ── Nav bar ── */
+    x.fillStyle='rgba(250,248,245,0.97)';x.fillRect(0,0,W,54);
+    x.fillStyle='rgba(0,0,0,0.06)';x.fillRect(0,54,W,1);
+
+    /* logo */
+    x.font='bold 21px Arial';x.textAlign='left';
+    x.fillStyle='#1e1b2e';x.fillText('S',30,36);
+    var lgrad=x.createLinearGradient(46,0,76,0);
+    lgrad.addColorStop(0,'#b09fea');lgrad.addColorStop(1,'#89d4c0');
+    x.fillStyle=lgrad;x.fillText('&',47,36);
+    x.fillStyle='#1e1b2e';x.fillText('J',69,36);
+    x.fillStyle='#89d4c0';x.beginPath();x.arc(92,28,4,0,Math.PI*2);x.fill();
+
+    /* nav links */
+    x.font='14px Arial';x.fillStyle='#8a8499';
+    ['Services','Work','Pricing'].forEach(function(t,i){x.fillText(t,660+i*95,35);});
+
+    /* nav cta */
+    x.fillStyle='#1e1b2e';rr(x,W-178,13,145,28,14);x.fill();
+    x.font='bold 12.5px Arial';x.fillStyle='#fff';x.textAlign='center';
+    x.fillText('Get a Quote →',W-178+72,31);
+
+    /* ── Pill badge ── */
+    x.fillStyle='rgba(176,159,234,0.16)';
+    rr(x,W/2-152,76,304,28,14);x.fill();
+    x.strokeStyle='rgba(176,159,234,0.35)';x.lineWidth=1;
+    rr(x,W/2-152,76,304,28,14);x.stroke();
+    x.fillStyle='#89d4c0';x.beginPath();x.arc(W/2-126,90,4,0,Math.PI*2);x.fill();
+    x.font='bold 10.5px Arial';x.fillStyle='#b09fea';x.textAlign='center';
+    x.fillText('NOW ACCEPTING PROJECTS',W/2+8,93);
+
+    /* ── Main headline ── */
+    x.shadowColor='rgba(176,159,234,0.4)';x.shadowBlur=36;
+    x.font='bold 74px Arial';x.fillStyle='#fff';x.textAlign='center';
+    x.fillText('Your Website Should',W/2,222);
+    var hg=x.createLinearGradient(0,0,W,0);
+    hg.addColorStop(0,'#b09fea');hg.addColorStop(1,'#89d4c0');
+    x.fillStyle=hg;x.fillText('Make You Money',W/2,308);
+    x.shadowBlur=0;
+
+    /* ── Subtext ── */
+    x.font='20px Arial';x.fillStyle='rgba(255,255,255,0.5)';x.textAlign='center';
+    x.fillText('Custom-built websites that turn visitors into paying customers.',W/2,368);
+    x.fillText('Live in weeks — not months.',W/2,395);
+
+    /* ── CTA Buttons ── */
+    x.fillStyle='#1e1b2e';rr(x,W/2-232,424,196,50,25);x.fill();
+    x.font='bold 15.5px Arial';x.fillStyle='#fff';x.textAlign='center';
+    x.fillText('Start Your Project →',W/2-134,455);
+
+    x.strokeStyle='rgba(255,255,255,0.28)';x.lineWidth=1.5;
+    rr(x,W/2+16,424,168,50,25);x.stroke();
+    x.font='15.5px Arial';x.fillStyle='rgba(255,255,255,0.7)';x.textAlign='center';
+    x.fillText('See Our Work',W/2+100,455);
+
+    /* ── Trust badges ── */
+    x.font='13px Arial';x.fillStyle='rgba(255,255,255,0.38)';
+    ['🔒 You own all files','⚡ 2–3 weeks','🎯 From $250','📍 Long Island, NY']
+      .forEach(function(t,i){x.textAlign='center';x.fillText(t,(W/4)*(i+.5),508);});
+
+    /* ── Marquee strip ── */
+    x.fillStyle='#f3f0ec';x.fillRect(0,542,W,30);
+    x.fillStyle='rgba(0,0,0,0.06)';x.fillRect(0,542,W,1);
+    x.fillStyle='#8a8499';x.font='12px Arial';
+    ['● Custom Web Design','● E-Commerce','● SEO Optimization','● Landing Pages','● Performance']
+      .forEach(function(m,i){x.textAlign='left';x.fillText(m,(W/5)*i+16,562);});
+
+    /* ── Light services strip ── */
+    x.fillStyle='#fff';x.fillRect(0,572,W,H-572);
+    x.font='bold 17px Arial';x.fillStyle='#1e1b2e';x.textAlign='center';
+    x.fillText('Everything Your Business Needs Online',W/2,606);
+
+    [[100,622,218,'🎨','Services','Design & Development'],
+     [W/2-109,622,218,'🖥️','Our Work','Real results.'],
+     [W-318,622,208,'✉️','Start a Project','Free quote in 24h']]
+    .forEach(function(c){
+      x.fillStyle='#faf8f5';rr(x,c[0],c[1],c[2],H-c[1]-8,8);x.fill();
+      x.strokeStyle='rgba(0,0,0,0.06)';x.lineWidth=1;
+      rr(x,c[0],c[1],c[2],H-c[1]-8,8);x.stroke();
+      x.font='24px Arial';x.textAlign='center';x.fillText(c[3],c[0]+c[2]/2,c[1]+38);
+      x.font='bold 13.5px Arial';x.fillStyle='#1e1b2e';x.fillText(c[4],c[0]+c[2]/2,c[1]+58);
+      x.font='11px Arial';x.fillStyle='#8a8499';x.fillText(c[5],c[0]+c[2]/2,c[1]+75);
+    });
+
+    /* ── Glare streak ── */
+    var gl=x.createLinearGradient(0,0,W*.36,H*.44);
+    gl.addColorStop(0,'rgba(255,255,255,0.038)');gl.addColorStop(1,'transparent');
+    x.fillStyle=gl;
+    x.beginPath();x.moveTo(0,0);x.lineTo(W*.42,0);x.lineTo(0,H*.52);x.closePath();x.fill();
+
+    return c;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     MAIN INIT
+  ══════════════════════════════════════════════════════════ */
   function initMac3D(){
-  var container=document.getElementById('mac3d-wrap');
-  var canvas=document.getElementById('mac3d-canvas');
-  if(!container||!canvas)return;
+    var wrap=document.getElementById('mac3d-wrap');
+    var cvs=document.getElementById('mac3d-canvas');
+    if(!wrap||!cvs)return;
+
+    var W=wrap.clientWidth||620;
+    var H=wrap.clientHeight||500;
+    if(W<10)return; /* layout not ready */
+
+    /* ── Renderer ── */
+    var renderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+    renderer.setSize(W,H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.08;
+
+    /* ── Scene / Camera ── */
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(30,W/H,0.1,100);
+    camera.position.set(1.25,1.05,4.2);
+    camera.lookAt(0,0.28,-0.15);
+
+    /* ── Materials ── */
+    var alMat =new THREE.MeshStandardMaterial({color:0xc6c6c6,metalness:.92,roughness:.08});
+    var darkMat=new THREE.MeshStandardMaterial({color:0x1c1c1e,metalness:.40,roughness:.50});
+    var edgeMat=new THREE.MeshStandardMaterial({color:0xdfdfdf,metalness:.98,roughness:.04});
+    var kbMat  =new THREE.MeshStandardMaterial({color:0xb0b0b0,metalness:.85,roughness:.22});
+    var tpMat  =new THREE.MeshStandardMaterial({color:0xb6b6b6,metalness:.88,roughness:.14});
+    var rubMat =new THREE.MeshStandardMaterial({color:0x111111,roughness:.90,metalness:.00});
+
+    /* screen texture */
+    var screenTex=new THREE.CanvasTexture(buildScreenCanvas());
+    var scrMat=new THREE.MeshBasicMaterial({map:screenTex});
+
+    /* ── MacBook Group ── */
+    var mac=new THREE.Group();
+    mac.rotation.set(0.04,-0.38,0.02);
+    scene.add(mac);
+
+    /* Helper: add mesh to group */
+    function add(geo,mat,px,py,pz,shadow){
+      var m=new THREE.Mesh(geo,mat);
+      m.position.set(px||0,py||0,pz||0);
+      if(shadow){m.castShadow=true;m.receiveShadow=true;}
+      mac.add(m);return m;
+    }
+
+    /* ── BASE ── */
+    add(new THREE.BoxGeometry(2.0,0.046,1.38),alMat,0,0,0,true);
+    /* underside dark panel */
+    add(new THREE.BoxGeometry(1.97,.003,1.35),
+        new THREE.MeshStandardMaterial({color:0x151515,roughness:.85,metalness:.05}),0,-0.025,0);
+    /* keyboard deck */
+    var kb=new THREE.Mesh(new THREE.PlaneGeometry(1.86,1.17),kbMat);
+    kb.rotation.x=-Math.PI/2;kb.position.set(0,0.024,0.04);mac.add(kb);
+    /* trackpad */
+    add(new THREE.BoxGeometry(.55,.003,.38),tpMat,0,0.024,0.44);
+    /* trackpad border */
+    add(new THREE.BoxGeometry(.57,.002,.40),
+        new THREE.MeshStandardMaterial({color:0xa8a8a8,metalness:.88,roughness:.12}),0,0.023,0.44);
+
+    /* ── RUBBER FEET ── */
+    [[-0.84,-0.57],[0.84,-0.57],[-0.84,0.57],[0.84,0.57]].forEach(function(p){
+      var f=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.010,8),rubMat);
+      f.position.set(p[0],-0.027,p[1]);mac.add(f);
+    });
+
+    /* ── HINGE ── */
+    var hinge=new THREE.Mesh(new THREE.CylinderGeometry(.021,.021,1.66,16),edgeMat);
+    hinge.rotation.z=Math.PI/2;hinge.position.set(0,.034,-.686);mac.add(hinge);
+
+    /* ── LID (pivoted open ~105° from base) ──
+       lidGroup.position = center of lid in world (macbook-local) space
+       When rotation.x = degToRad(-15): lid leans 15° back from vertical.
+       Screen face (+Z of lid box) faces mostly toward +Z (viewer). ✓       */
+    var lidGroup=new THREE.Group();
+    lidGroup.position.set(0,0.641,-0.856);
+    lidGroup.rotation.x=THREE.MathUtils.degToRad(-15);
+    mac.add(lidGroup);
+
+    function addLid(geo,mat,px,py,pz,s){
+      var m=new THREE.Mesh(geo,mat);
+      m.position.set(px||0,py||0,pz||0);
+      if(s){m.castShadow=true;}
+      lidGroup.add(m);return m;
+    }
+
+    /* aluminum back */
+    addLid(new THREE.BoxGeometry(2.0,1.28,.046),alMat,0,0,0,true);
+    /* inner dark bezel */
+    addLid(new THREE.BoxGeometry(1.94,1.22,.012),darkMat,0,0,.027);
+    /* screen */
+    var scr=new THREE.Mesh(new THREE.PlaneGeometry(1.72,1.075),scrMat);
+    scr.position.set(0,.005,.034);lidGroup.add(scr);
+    /* notch */
+    addLid(new THREE.BoxGeometry(.14,.022,.013),darkMat,0,.617,.035);
+    /* camera dot */
+    var cam=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,.006,8),
+      new THREE.MeshStandardMaterial({color:0x2a2a2a,roughness:.8}));
+    cam.rotation.x=Math.PI/2;cam.position.set(0,.619,.039);lidGroup.add(cam);
+    /* top-edge shine */
+    addLid(new THREE.BoxGeometry(2.0,.008,.046),edgeMat,0,.644,0);
+    /* side-edge shines */
+    [-1.0,1.0].forEach(function(s){
+      addLid(new THREE.BoxGeometry(.008,1.28,.046),edgeMat,s,0,0);
+    });
+    /* subtle screen glare plane */
+    var glareMesh=new THREE.Mesh(
+      new THREE.PlaneGeometry(.55,.72),
+      new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.042,depthWrite:false})
+    );
+    glareMesh.position.set(-.54,.22,.035);glareMesh.rotation.z=.3;lidGroup.add(glareMesh);
+
+    /* ── SHADOW CATCHER ── */
+    var shPlane=new THREE.Mesh(
+      new THREE.PlaneGeometry(10,10),
+      new THREE.ShadowMaterial({opacity:.30})
+    );
+    shPlane.rotation.x=-Math.PI/2;shPlane.position.y=-.70;
+    shPlane.receiveShadow=true;scene.add(shPlane);
+
+    /* ── LIGHTS ── */
+    scene.add(new THREE.AmbientLight(0xfff4e8,.40));
+
+    var key=new THREE.DirectionalLight(0xffffff,2.75);
+    key.position.set(4,9,5);key.castShadow=true;
+    key.shadow.bias=-0.001;key.shadow.mapSize.set(2048,2048);
+    key.shadow.camera.left=-5;key.shadow.camera.right=5;
+    key.shadow.camera.top=6;key.shadow.camera.bottom=-4;
+    scene.add(key);
+
+    /* purple accent */
+    var purL=new THREE.PointLight(0xb09fea,5.2,18);
+    purL.position.set(-3.5,2.5,1.5);scene.add(purL);
+
+    /* mint accent */
+    var minL=new THREE.PointLight(0x89d4c0,4.0,15);
+    minL.position.set(3.0,-0.5,2.5);scene.add(minL);
+
+    /* rim/back */
+    var rim=new THREE.DirectionalLight(0xe0deff,.80);
+    rim.position.set(-4,2,-5);scene.add(rim);
+
+    /* soft under-fill */
+    var fill=new THREE.PointLight(0xffffff,.55,9);
+    fill.position.set(0,-2,2);scene.add(fill);
+
+    /* warm top */
+    var top=new THREE.DirectionalLight(0xfffbe8,.45);
+    top.position.set(0,10,0);scene.add(top);
+
+    /* ── ANIMATE ── */
+    var t=0;
+    (function loop(){
+      requestAnimationFrame(loop);
+      t+=0.016;
+      mac.position.y=Math.sin(t*.55)*.065;
+      mac.rotation.y=-0.38+Math.sin(t*.28)*.022;
+      renderer.render(scene,camera);
+    })();
+
+    /* ── RESIZE ── */
+    window.addEventListener('resize',function(){
+      if(window.innerWidth<=900)return;
+      W=wrap.clientWidth;H=wrap.clientHeight;
+      camera.aspect=W/H;camera.updateProjectionMatrix();
+      renderer.setSize(W,H);
+    },{passive:true});
+  }
+})();
+</script>
+</body>
+</html>
 
   // ── Scene ──────────────────────────────────────────────
   var scene=new THREE.Scene();
