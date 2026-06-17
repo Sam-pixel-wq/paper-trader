@@ -1,17 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { getDb, BRACKETS, type Player } from '@/lib/db'
+import { getDb, ensureInit, BRACKETS, type Player } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+  await ensureInit()
   const db = getDb()
-  const players = db.prepare(`
+  const result = await db.execute(`
     SELECT p.*, b.name AS bracket_name, b.starting_cash AS bracket_starting_cash, b.emoji
     FROM players p
     JOIN brackets b ON b.id = p.bracket_id
     ORDER BY p.created_at ASC
-  `).all()
-  return NextResponse.json(players)
+  `)
+  return NextResponse.json(result.rows)
 }
 
 export async function POST(req: NextRequest) {
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid bracket' }, { status: 400 })
   }
 
+  await ensureInit()
   const db = getDb()
 
   let starting_cash: number
@@ -37,16 +39,19 @@ export async function POST(req: NextRequest) {
     }
     starting_cash = custom_amount
   } else {
-    const bracket = db.prepare('SELECT * FROM brackets WHERE id = ?').get(bracket_id) as { starting_cash: number }
-    starting_cash = bracket.starting_cash
+    const bRow = (await db.execute({ sql: 'SELECT * FROM brackets WHERE id = ?', args: [bracket_id] })).rows[0]
+    starting_cash = bRow?.starting_cash as number
   }
 
   try {
-    const result = db.prepare(
-      'INSERT INTO players (name, bracket_id, cash, starting_cash, is_private) VALUES (?, ?, ?, ?, ?)'
-    ).run(name.trim(), bracket_id, starting_cash, starting_cash, is_private ? 1 : 0)
-
-    const player = db.prepare('SELECT * FROM players WHERE id = ?').get(result.lastInsertRowid) as Player
+    const ins = await db.execute({
+      sql: 'INSERT INTO players (name, bracket_id, cash, starting_cash, is_private) VALUES (?, ?, ?, ?, ?)',
+      args: [name.trim(), bracket_id, starting_cash, starting_cash, is_private ? 1 : 0],
+    })
+    const player = (await db.execute({
+      sql: 'SELECT * FROM players WHERE id = ?',
+      args: [ins.lastInsertRowid ?? 0],
+    })).rows[0] as unknown as Player
     return NextResponse.json(player)
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : ''

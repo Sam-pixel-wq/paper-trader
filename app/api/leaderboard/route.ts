@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server'
-import { getDb, type Player, type Position, type Bracket } from '@/lib/db'
+import { getDb, ensureInit, type Player, type Position, type Bracket } from '@/lib/db'
 import { getPrices } from '@/lib/priceCache'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
+    await ensureInit()
     const db = getDb()
-    // Exclude private (free-trade) players from public leaderboard
-    const players = db.prepare(
-      'SELECT * FROM players WHERE is_private = 0 ORDER BY created_at ASC'
-    ).all() as Player[]
-    const allPositions = db.prepare('SELECT * FROM positions').all() as Position[]
-    const brackets = db.prepare('SELECT * FROM brackets ORDER BY starting_cash ASC').all() as Bracket[]
+
+    const players = (await db.execute('SELECT * FROM players WHERE is_private = 0 ORDER BY created_at ASC')).rows as unknown as Player[]
+    const allPositions = (await db.execute('SELECT * FROM positions')).rows as unknown as Position[]
+    const brackets = (await db.execute('SELECT * FROM brackets ORDER BY starting_cash ASC')).rows as unknown as Bracket[]
 
     const uniqueTickers = [...new Set(allPositions.map(p => p.ticker))]
     const prices = await getPrices(uniqueTickers)
@@ -34,7 +33,7 @@ export async function GET() {
     })
 
     const leaderboard = brackets
-      .filter(b => b.id !== 'custom') // Custom bracket gets its own section
+      .filter(b => b.id !== 'custom')
       .map(bracket => ({
         ...bracket,
         players: playerRows
@@ -43,7 +42,6 @@ export async function GET() {
           .map((p, i) => ({ ...p, rank: i + 1 })),
       }))
 
-    // Custom bracket group
     const customPlayers = playerRows
       .filter(p => p.bracket_id === 'custom')
       .sort((a, b) => b.return_pct - a.return_pct)
